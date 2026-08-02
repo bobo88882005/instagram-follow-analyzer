@@ -3,103 +3,104 @@ export function extractUsernames(html: string): string[] {
   const usernames = new Set<string>();
 
 
-  const parser = new DOMParser();
+  // Decodifica HTML
+  const decoded =
+    html
+      .replace(/&quot;/g, '"')
+      .replace(/&#x27;/g, "'")
+      .replace(/&amp;/g, "&");
 
-  const document =
-    parser.parseFromString(
-      html,
-      "text/html"
+
+
+  // Cerca URL Instagram
+  const urlMatches =
+    decoded.match(
+      /instagram\.com\/([a-zA-Z0-9._]+)/gi
     );
 
 
-  // Metodo 1: legge i link Instagram presenti nell'HTML
-  const links =
-    Array.from(
-      document.querySelectorAll("a")
-    );
+  if (urlMatches) {
+
+    urlMatches.forEach(item => {
+
+      const username =
+        item
+          .replace(/instagram\.com\//i, "")
+          .replace("/", "")
+          .toLowerCase();
 
 
-  links.forEach((link) => {
+      if (
+        /^[a-z0-9._]+$/.test(username)
+      ) {
 
-    const href =
-      link.getAttribute("href");
-
-
-    const text =
-      link.textContent
-        ?.trim();
-
-
-    let username = "";
-
-
-    if (href) {
-
-      const match =
-        href.match(
-          /instagram\.com\/([^\/?#]+)/i
-        );
-
-
-      if (match) {
-
-        username =
-          match[1];
+        usernames.add(username);
 
       }
 
-    }
+    });
 
-
-    if (!username && text) {
-
-      username =
-        text;
-
-    }
-
-
-    username =
-      username
-        .replace("@", "")
-        .trim()
-        .toLowerCase();
+  }
 
 
 
-    if (
-      /^[a-z0-9._]+$/.test(username)
-    ) {
-
-      usernames.add(username);
-
-    }
-
-
-  });
-
-
-
-  // Metodo 2: fallback per eventuali HTML diversi
-  const rawText =
-    document.body.innerText;
-
-
-  const possibleUsers =
-    rawText.match(
-      /@[a-zA-Z0-9._]+/g
+  // Cerca elementi h2 (molti export Instagram li usano)
+  const h2Matches =
+    decoded.match(
+      /<h2[^>]*>(.*?)<\/h2>/gis
     );
 
 
-  if (possibleUsers) {
+  if (h2Matches) {
 
-    possibleUsers.forEach(user => {
+    h2Matches.forEach(item => {
 
-      usernames.add(
-        user
-          .replace("@","")
-          .toLowerCase()
-      );
+      const username =
+        item
+          .replace(/<[^>]+>/g,"")
+          .trim()
+          .toLowerCase();
+
+
+      if (
+        /^[a-z0-9._]+$/.test(username)
+      ) {
+
+        usernames.add(username);
+
+      }
+
+    });
+
+  }
+
+
+
+  // Cerca testo tra tag div/span
+  const textMatches =
+    decoded.match(
+      />\s*([a-zA-Z0-9._]{2,})\s*</g
+    );
+
+
+  if (textMatches) {
+
+    textMatches.forEach(item => {
+
+      const username =
+        item
+          .replace(/[><]/g,"")
+          .trim()
+          .toLowerCase();
+
+
+      if (
+        /^[a-z0-9._]+$/.test(username)
+      ) {
+
+        usernames.add(username);
+
+      }
 
     });
 
