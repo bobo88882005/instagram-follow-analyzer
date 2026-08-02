@@ -7,8 +7,7 @@ import {
   UserX,
   RefreshCcw,
   ChevronRight,
-  Users,
-  Ghost
+  Users
 } from "lucide-react";
 
 import { readInstagramZip } from "./parser/zipParser";
@@ -58,7 +57,6 @@ function App() {
 
     try {
 
-
       const data =
         await readInstagramZip(file);
 
@@ -73,14 +71,14 @@ function App() {
 
 
 
-    } catch(error) {
+    } catch(err) {
 
 
-      console.error(error);
+      console.error(err);
 
 
       alert(
-        "Errore durante l'analisi"
+        "Errore durante analisi ZIP"
       );
 
 
@@ -97,16 +95,18 @@ function App() {
 
 
 
-  function profileLink(user:string) {
 
+  function profileLink(
+    username:string
+  ) {
 
     return (
       "https://www.instagram.com/" +
-      encodeURIComponent(user)
+      encodeURIComponent(username)
     );
 
-
   }
+
 
 
 
@@ -119,10 +119,7 @@ function App() {
   }) {
 
 
-    if(
-      !users ||
-      users.length === 0
-    ) {
+    if(!users || users.length===0)
 
       return (
 
@@ -134,8 +131,6 @@ function App() {
 
       );
 
-    }
-
 
 
 
@@ -145,99 +140,61 @@ function App() {
 
         {
           users
-          .slice(0,250)
+          .slice(0,300)
           .map(
-            (user:string)=>(
+            user => (
 
-            <a
+              <a
 
-              key={user}
+                key={user}
 
-              href={
-                profileLink(user)
-              }
+                href={
+                  profileLink(user)
+                }
 
-              target="_blank"
+                target="_blank"
 
-              rel="noopener noreferrer"
+                rel="noreferrer"
 
-            >
+              >
 
-              @{user}
+                @{user}
 
-              <ChevronRight size={16}/>
+                <ChevronRight size={15}/>
 
-            </a>
+              </a>
 
-          ))
+            )
 
-        }
-
-      </div>
-
-    );
-
-  }
-
-
-
-
-
-  function SecondaryCard({
-    icon,
-    title,
-    count,
-    name
-  }:{
-    icon:any;
-    title:string;
-    count:number;
-    name:string;
-  }) {
-
-
-    return (
-
-      <div
-
-        className="menu-card"
-
-        onClick={() =>
-          setSection(
-            section === name
-            ? null
-            : name
           )
         }
 
-      >
-
-        {icon}
-
-
-        <span>
-
-          {title}
-
-          <small>
-
-            {count}
-
-          </small>
-
-
-        </span>
-
-
-
-        <ChevronRight/>
-
-
       </div>
 
     );
 
+
   }
+
+
+
+
+
+
+
+
+  function toggleSection(
+    name:string
+  ){
+
+    setSection(
+      section === name
+      ? null
+      : name
+    );
+
+  }
+
 
 
 
@@ -258,55 +215,60 @@ function App() {
 
 
 
+
+
       {!result && (
 
         <>
 
 
-        <div className="logo">
+          <div className="logo">
 
-          Instagram Analyzer
+            Instagram Analyzer
 
-        </div>
-
-
-        <p className="subtitle">
-
-          Analizza followers e following
-
-        </p>
+          </div>
 
 
 
-        <label className="upload-button">
+          <p className="subtitle">
 
-          <Upload size={20}/>
+            Analizza followers e following
 
-
-          {
-            loading
-            ?
-            "Analisi..."
-            :
-            "Carica ZIP Instagram"
-          }
+          </p>
 
 
 
-          <input
 
-            hidden
-
-            type="file"
-
-            accept=".zip"
-
-            onChange={handleUpload}
-
-          />
+          <label className="upload-button">
 
 
-        </label>
+            <Upload size={20}/>
+
+
+            {
+              loading
+              ?
+              "Analisi..."
+              :
+              "Carica ZIP Instagram"
+            }
+
+
+
+            <input
+
+              hidden
+
+              type="file"
+
+              accept=".zip"
+
+              onChange={handleUpload}
+
+            />
+
+
+          </label>
 
 
         </>
@@ -319,10 +281,11 @@ function App() {
 
 
 
-
       {result && (
 
         <>
+
+
 
 
 
@@ -338,18 +301,33 @@ function App() {
 
 
 
+
+
+
         <div className="stats">
 
 
-          <div>
+          <div
+
+            className="stat-click"
+
+            onClick={() =>
+              toggleSection("followers")
+            }
+
+          >
 
             <small>
+
               Followers
+
             </small>
 
 
             <strong>
+
               {result.followersCount}
+
             </strong>
 
 
@@ -357,19 +335,34 @@ function App() {
 
 
 
-          <div>
+
+
+          <div
+
+            className="stat-click"
+
+            onClick={() =>
+              toggleSection("following")
+            }
+
+          >
 
             <small>
+
               Following
+
             </small>
 
 
             <strong>
+
               {result.followingCount}
+
             </strong>
 
 
           </div>
+
 
 
         </div>
@@ -381,7 +374,65 @@ function App() {
 
 
 
+        {
+          section==="followers" && (
+
+            <div className="popup-section">
+
+              <h3>
+                Followers
+              </h3>
+
+              <UserList
+
+                users={
+                  result.followers
+                }
+
+              />
+
+            </div>
+
+          )
+        }
+
+
+
+
+
+
+        {
+          section==="following" && (
+
+            <div className="popup-section">
+
+              <h3>
+                Following
+              </h3>
+
+              <UserList
+
+                users={
+                  result.following
+                }
+
+              />
+
+            </div>
+
+          )
+        }
+
+
+
+
+
+
+
+
+
         <div className="counter-grid">
+
 
 
           <button
@@ -399,14 +450,13 @@ function App() {
               setView("normal")
             }
 
+
           >
 
             🔴
 
             <span>
-
               Non ricambiano
-
             </span>
 
 
@@ -420,6 +470,7 @@ function App() {
 
 
           </button>
+
 
 
 
@@ -441,14 +492,13 @@ function App() {
               setView("inactive")
             }
 
+
           >
 
             👻
 
             <span>
-
               Possibili inattivi
-
             </span>
 
 
@@ -462,6 +512,7 @@ function App() {
 
 
           </button>
+
 
 
 
@@ -519,19 +570,33 @@ function App() {
 
 
 
-        <SecondaryCard
 
-          icon={<Clock/>}
+        <div
 
-          title="Pending Requests"
+          className="menu-card"
 
-          count={
-            result.pendingRequests.length
+          onClick={() =>
+            toggleSection("pending")
           }
 
-          name="pending"
+        >
 
-        />
+          <Clock/>
+
+
+          <span>
+
+            Pending Requests
+
+          </span>
+
+
+          <ChevronRight/>
+
+
+        </div>
+
+
 
 
 
@@ -560,19 +625,33 @@ function App() {
 
 
 
-        <SecondaryCard
 
-          icon={<UserPlus/>}
+        <div
 
-          title="Richieste ricevute"
+          className="menu-card"
 
-          count={
-            result.receivedRequests.length
+          onClick={() =>
+            toggleSection("received")
           }
 
-          name="received"
+        >
 
-        />
+          <UserPlus/>
+
+
+          <span>
+
+            Richieste ricevute
+
+          </span>
+
+
+          <ChevronRight/>
+
+
+        </div>
+
+
 
 
 
@@ -601,19 +680,33 @@ function App() {
 
 
 
-        <SecondaryCard
 
-          icon={<UserX/>}
+        <div
 
-          title="Recently Unfollowed"
+          className="menu-card"
 
-          count={
-            result.recentlyUnfollowed.length
+          onClick={() =>
+            toggleSection("unfollow")
           }
 
-          name="unfollow"
+        >
 
-        />
+          <UserX/>
+
+
+          <span>
+
+            Recently Unfollowed
+
+          </span>
+
+
+          <ChevronRight/>
+
+
+        </div>
+
+
 
 
 
@@ -641,6 +734,8 @@ function App() {
 
 
 
+
+
         <button
 
           className="reset"
@@ -653,12 +748,10 @@ function App() {
 
           <RefreshCcw size={18}/>
 
-
           Nuova analisi
 
 
         </button>
-
 
 
 
@@ -672,16 +765,16 @@ function App() {
 
 
 
+
       </div>
 
 
     </main>
 
-
   );
 
-
 }
+
 
 
 export default App;
