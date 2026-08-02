@@ -1,10 +1,23 @@
+import type { InstagramUser } from "../parser/zipParser";
+
+
+
 type InstagramData = {
-  followers: string[];
-  following: string[];
-  pendingRequests?: string[];
-  receivedRequests?: string[];
-  recentlyUnfollowed?: string[];
+
+  followers: InstagramUser[];
+
+  following: InstagramUser[];
+
+  pendingRequests?: InstagramUser[];
+
+  receivedRequests?: InstagramUser[];
+
+  recentlyUnfollowed?: InstagramUser[];
+
 };
+
+
+
 
 
 
@@ -135,9 +148,13 @@ const manualInactiveUsers = [
 
 
 
-function normalize(user:string) {
 
-  return user
+
+function normalize(
+  username:string
+){
+
+  return username
     .replace("@","")
     .trim()
     .toLowerCase();
@@ -148,56 +165,27 @@ function normalize(user:string) {
 
 
 
-function cleanUsers(users:string[] = []) {
-
-  const blacklist = [
-
-    "instagram user",
-    "instagramuser",
-    "deleted",
-    "deleted account",
-    "unknown",
-    "null",
-    "profile"
-
-  ];
 
 
+function cleanUsers(
+  users:InstagramUser[] = []
+){
 
-  return Array.from(
+  return users
+    .map(user => ({
+      username:
+        normalize(
+          user.username
+        ),
 
-    new Set(
+      date:
+        user.date || null
 
-      users
-
-      .map(normalize)
-
-      .filter(user => {
-
-
-        if (!user)
-          return false;
-
-
-
-        if (
-          blacklist.some(
-            item =>
-            user.includes(item)
-          )
-        )
-          return false;
-
-
-
-        return /^[a-z0-9._]{2,}$/.test(user);
-
-
-      })
-
-    )
-
-  );
+    }))
+    .filter(
+      user =>
+      user.username
+    );
 
 }
 
@@ -207,40 +195,19 @@ function cleanUsers(users:string[] = []) {
 
 
 
+
 function findPossibleInactive(
-  users:string[]
-) {
+  users:InstagramUser[]
+){
 
+  return users.filter(
+    user =>
 
-  return users.filter(user => {
+      manualInactiveUsers.includes(
+        user.username
+      )
 
-
-    if (
-      manualInactiveUsers.includes(user)
-    )
-      return true;
-
-
-
-    if (
-      /^[0-9._]+$/.test(user)
-    )
-      return true;
-
-
-
-    if (
-      user.length < 3
-    )
-      return true;
-
-
-
-    return false;
-
-
-  });
-
+  );
 
 }
 
@@ -253,7 +220,9 @@ function findPossibleInactive(
 
 export function analyzeInstagram(
   data:InstagramData
-) {
+){
+
+
 
 
   const followers =
@@ -270,22 +239,38 @@ export function analyzeInstagram(
 
 
 
-  // Rimuove dal conteggio following gli esclusi manualmente
+
 
   const following =
     followingAll.filter(
 
       user =>
-      !manualInactiveUsers.includes(user)
+      !manualInactiveUsers.includes(
+        user.username
+      )
 
     );
+
+
+
+
 
 
 
   const followersSet =
     new Set(
-      followers
+
+      followers.map(
+        user =>
+        user.username
+      )
+
     );
+
+
+
+
+
 
 
 
@@ -294,9 +279,14 @@ export function analyzeInstagram(
     following.filter(
 
       user =>
-      !followersSet.has(user)
+      !followersSet.has(
+        user.username
+      )
 
     );
+
+
+
 
 
 
@@ -304,17 +294,11 @@ export function analyzeInstagram(
 
   const possibleInactive =
 
-    Array.from(
-
-      new Set([
-
-        ...findPossibleInactive(
-          followingAll
-        )
-
-      ])
-
+    findPossibleInactive(
+      followingAll
     );
+
+
 
 
 
@@ -322,8 +306,15 @@ export function analyzeInstagram(
 
   const inactiveSet =
     new Set(
-      possibleInactive
+
+      possibleInactive.map(
+        user =>
+        user.username
+      )
+
     );
+
+
 
 
 
@@ -334,9 +325,15 @@ export function analyzeInstagram(
     allNotFollowingBack.filter(
 
       user =>
-      !inactiveSet.has(user)
+      !inactiveSet.has(
+        user.username
+      )
 
     );
+
+
+
+
 
 
 
