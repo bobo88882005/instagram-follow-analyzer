@@ -15,38 +15,43 @@ import { analyzeInstagram } from "./utils/analyzer";
 
 
 
+
+
 function App() {
 
 
-  const [result, setResult] =
+  const [result,setResult] =
     useState<any>(null);
 
 
-  const [loading, setLoading] =
+  const [loading,setLoading] =
     useState(false);
 
 
-  const [view, setView] =
-    useState<"normal" | "inactive">("normal");
+  const [view,setView] =
+    useState<
+      "normal" | "inactive"
+    >("normal");
 
 
-  const [section, setSection] =
-    useState<string | null>(null);
+  const [section,setSection] =
+    useState<string|null>(null);
+
 
 
 
 
 
   async function handleUpload(
-    e: React.ChangeEvent<HTMLInputElement>
-  ) {
+    e:React.ChangeEvent<HTMLInputElement>
+  ){
 
 
     const file =
       e.target.files?.[0];
 
 
-    if (!file)
+    if(!file)
       return;
 
 
@@ -55,30 +60,37 @@ function App() {
 
 
 
-    try {
+    try{
+
 
       const data =
-        await readInstagramZip(file);
+        await readInstagramZip(
+          file
+        );
 
 
 
       const analysis =
-        analyzeInstagram(data);
+        analyzeInstagram(
+          data
+        );
 
 
 
-      setResult(analysis);
+      setResult(
+        analysis
+      );
 
 
 
-    } catch(err) {
+    }catch(err){
 
 
       console.error(err);
 
 
       alert(
-        "Errore durante analisi ZIP"
+        "Errore analisi ZIP"
       );
 
 
@@ -96,13 +108,17 @@ function App() {
 
 
 
+
+
   function profileLink(
     username:string
-  ) {
+  ){
 
     return (
       "https://www.instagram.com/" +
-      encodeURIComponent(username)
+      encodeURIComponent(
+        username
+      )
     );
 
   }
@@ -112,15 +128,21 @@ function App() {
 
 
 
+
+
   function UserList({
-    users
+    users,
+    showDate=false
   }:{
-    users:string[]
-  }) {
+    users:any[],
+    showDate?:boolean
+  }){
 
 
-    if(!users || users.length===0)
-
+    if(
+      !users ||
+      users.length===0
+    )
       return (
 
         <div className="empty">
@@ -134,47 +156,79 @@ function App() {
 
 
 
+
     return (
 
       <div className="user-list">
 
-        {
-          users
-          .slice(0,300)
-          .map(
-            user => (
 
-              <a
+      {
+        users
+        .slice(0,300)
+        .map(
+          user => (
 
-                key={user}
+          <a
 
-                href={
-                  profileLink(user)
-                }
+            key={
+              user.username
+            }
 
-                target="_blank"
+            href={
+              profileLink(
+                user.username
+              )
+            }
 
-                rel="noreferrer"
+            target="_blank"
 
-              >
+            rel="noreferrer"
 
-                @{user}
+          >
 
-                <ChevronRight size={15}/>
 
-              </a>
+            <span>
 
-            )
+              @{user.username}
 
-          )
-        }
+            </span>
+
+
+
+            {
+              showDate &&
+              user.date &&
+              (
+
+                <small className="follow-date">
+
+                  {user.date}
+
+                </small>
+
+              )
+
+            }
+
+
+
+            <ChevronRight size={14}/>
+
+
+          </a>
+
+
+        ))
+
+      }
+
 
       </div>
 
     );
 
-
   }
+
 
 
 
@@ -188,9 +242,11 @@ function App() {
   ){
 
     setSection(
-      section === name
-      ? null
-      : name
+      section===name
+      ?
+      null
+      :
+      name
     );
 
   }
@@ -202,227 +258,215 @@ function App() {
 
 
 
+
   return (
 
-    <main className="app">
+  <main className="app">
 
 
-      <div className="background-gradient"/>
+  <div className="background-gradient"/>
 
 
+  <div className="card">
 
-      <div className="card">
 
 
 
 
 
-      {!result && (
+  {!result && (
 
-        <>
+    <>
 
+    <div className="logo">
 
-          <div className="logo">
+      Instagram Analyzer
 
-            Instagram Analyzer
+    </div>
 
-          </div>
 
+    <p className="subtitle">
 
+      Analizza followers e following
 
-          <p className="subtitle">
+    </p>
 
-            Analizza followers e following
 
-          </p>
 
+    <label className="upload-button">
 
 
+      <Upload size={20}/>
 
-          <label className="upload-button">
 
+      {
+        loading
+        ?
+        "Analisi..."
+        :
+        "Carica ZIP Instagram"
+      }
 
-            <Upload size={20}/>
 
 
-            {
-              loading
-              ?
-              "Analisi..."
-              :
-              "Carica ZIP Instagram"
-            }
+      <input
 
+        hidden
 
+        type="file"
 
-            <input
+        accept=".zip"
 
-              hidden
+        onChange={handleUpload}
 
-              type="file"
+      />
 
-              accept=".zip"
 
-              onChange={handleUpload}
+    </label>
 
-            />
 
+    </>
 
-          </label>
+  )}
 
 
-        </>
 
-      )}
 
 
 
 
 
+  {result && (
 
+  <>
 
-      {result && (
+  <h1>
 
-        <>
+    <Users size={22}/>
 
+    Dashboard
 
+  </h1>
 
 
 
-        <h1>
 
-          <Users size={22}/>
 
-          Dashboard
 
-        </h1>
+  <div className="stats">
 
 
+    <div
 
+      className="stat-click"
 
+      onClick={()=>
+        toggleSection(
+          "followers"
+        )
+      }
 
+    >
 
+      <small>
+        Followers
+      </small>
 
 
-        <div className="stats">
+      <strong>
 
+        {result.followersCount}
 
-          <div
+      </strong>
 
-            className="stat-click"
 
-            onClick={() =>
-              toggleSection("followers")
-            }
+    </div>
 
-          >
 
-            <small>
 
-              Followers
 
-            </small>
 
+    <div
 
-            <strong>
+      className="stat-click"
 
-              {result.followersCount}
+      onClick={()=>
+        toggleSection(
+          "following"
+        )
+      }
 
-            </strong>
+    >
 
+      <small>
+        Following
+      </small>
 
-          </div>
 
+      <strong>
 
+        {result.followingCount}
 
+      </strong>
 
 
-          <div
+    </div>
 
-            className="stat-click"
 
-            onClick={() =>
-              toggleSection("following")
-            }
+  </div>
 
-          >
 
-            <small>
 
-              Following
 
-            </small>
 
 
-            <strong>
 
-              {result.followingCount}
 
-            </strong>
 
+  {
+    section==="followers" &&
 
-          </div>
+    <div className="popup-section">
 
+      <UserList
 
-
-        </div>
-
-
-
-
-
-
-
-
-        {
-          section==="followers" && (
-
-            <div className="popup-section">
-
-              <h3>
-                Followers
-              </h3>
-
-              <UserList
-
-                users={
-                  result.followers
-                }
-
-              />
-
-            </div>
-
-          )
+        users={
+          result.followers
         }
 
+        showDate={true}
+
+      />
+
+    </div>
+
+  }
 
 
 
 
 
-        {
-          section==="following" && (
 
-            <div className="popup-section">
 
-              <h3>
-                Following
-              </h3>
 
-              <UserList
+  {
+    section==="following" &&
 
-                users={
-                  result.following
-                }
+    <div className="popup-section">
 
-              />
+      <UserList
 
-            </div>
-
-          )
+        users={
+          result.following
         }
 
+        showDate={true}
+
+      />
+
+    </div>
+
+  }
 
 
 
@@ -431,125 +475,44 @@ function App() {
 
 
 
-        <div className="counter-grid">
+
+  <div className="counter-grid">
 
 
+    <button
 
-          <button
-
-            className={
-              view==="normal"
-              ?
-              "counter active"
-              :
-              "counter"
-            }
-
-
-            onClick={() =>
-              setView("normal")
-            }
+      className={
+        view==="normal"
+        ?
+        "counter active"
+        :
+        "counter"
+      }
 
 
-          >
+      onClick={()=>
+        setView("normal")
+      }
 
-            🔴
+    >
 
-            <span>
-              Non ricambiano
-            </span>
+      🔴
 
-
-            <strong>
-
-              {
-                result.notFollowingBack.length
-              }
-
-            </strong>
+      <span>
+        Non ricambiano
+      </span>
 
 
-          </button>
-
-
-
-
-
-
-
-          <button
-
-            className={
-              view==="inactive"
-              ?
-              "counter active"
-              :
-              "counter"
-            }
-
-
-            onClick={() =>
-              setView("inactive")
-            }
-
-
-          >
-
-            👻
-
-            <span>
-              Possibili inattivi
-            </span>
-
-
-            <strong>
-
-              {
-                result.possibleInactive.length
-              }
-
-            </strong>
-
-
-          </button>
-
-
-
-
-        </div>
-
-
-
-
-
-
+      <strong>
 
         {
-          view==="normal"
-
-          ?
-
-          <UserList
-
-            users={
-              result.notFollowingBack
-            }
-
-          />
-
-
-          :
-
-          <UserList
-
-            users={
-              result.possibleInactive
-            }
-
-          />
-
+          result.notFollowingBack.length
         }
 
+      </strong>
+
+
+    </button>
 
 
 
@@ -557,221 +520,255 @@ function App() {
 
 
 
+    <button
 
-        <div className="secondary-title">
-
-          Altre sezioni
-
-        </div>
-
-
-
-
-
+      className={
+        view==="inactive"
+        ?
+        "counter active"
+        :
+        "counter"
+      }
 
 
+      onClick={()=>
+        setView("inactive")
+      }
 
-        <div
+    >
 
-          className="menu-card"
+      👻
 
-          onClick={() =>
-            toggleSection("pending")
-          }
-
-        >
-
-          <Clock/>
-
-
-          <span>
-
-            Pending Requests
-
-          </span>
+      <span>
+        Possibili inattivi
+      </span>
 
 
-          <ChevronRight/>
-
-
-        </div>
-
-
-
-
+      <strong>
 
         {
-          section==="pending" && (
-
-            <div className="popup-section">
-
-              <UserList
-
-                users={
-                  result.pendingRequests
-                }
-
-              />
-
-            </div>
-
-          )
+          result.possibleInactive.length
         }
 
+      </strong>
 
 
+    </button>
 
 
 
+  </div>
 
 
 
-        <div
 
-          className="menu-card"
 
-          onClick={() =>
-            toggleSection("received")
-          }
 
-        >
 
-          <UserPlus/>
 
+  <UserList
 
-          <span>
+    users={
+      view==="normal"
+      ?
+      result.notFollowingBack
+      :
+      result.possibleInactive
+    }
 
-            Richieste ricevute
+  >
 
-          </span>
 
+  </UserList>
 
-          <ChevronRight/>
 
 
-        </div>
 
 
 
 
 
-        {
-          section==="received" && (
 
-            <div className="popup-section">
+  <div className="secondary-title">
 
-              <UserList
+    Altre sezioni
 
-                users={
-                  result.receivedRequests
-                }
+  </div>
 
-              />
 
-            </div>
 
-          )
-        }
 
 
 
+  <div
+    className="menu-card"
+    onClick={()=>
+      toggleSection("pending")
+    }
+  >
 
+    <Clock/>
 
+    <span>
+      Pending Requests
+    </span>
 
 
+    <ChevronRight/>
 
 
-        <div
+  </div>
 
-          className="menu-card"
 
-          onClick={() =>
-            toggleSection("unfollow")
-          }
 
-        >
 
-          <UserX/>
 
+  {
+    section==="pending" &&
 
-          <span>
+    <UserList
 
-            Recently Unfollowed
+      users={
+        result.pendingRequests
+      }
 
-          </span>
+    />
 
+  }
 
-          <ChevronRight/>
 
 
-        </div>
 
 
 
 
+  <div
+    className="menu-card"
+    onClick={()=>
+      toggleSection("received")
+    }
+  >
 
-        {
-          section==="unfollow" && (
+    <UserPlus/>
 
-            <div className="popup-section">
+    <span>
+      Richieste ricevute
+    </span>
 
-              <UserList
 
-                users={
-                  result.recentlyUnfollowed
-                }
+    <ChevronRight/>
 
-              />
 
-            </div>
+  </div>
 
-          )
-        }
 
 
 
 
+  {
+    section==="received" &&
 
+    <UserList
 
+      users={
+        result.receivedRequests
+      }
 
+    />
 
+  }
 
-        <button
 
-          className="reset"
 
-          onClick={() =>
-            setResult(null)
-          }
 
-        >
 
-          <RefreshCcw size={18}/>
 
-          Nuova analisi
 
 
-        </button>
 
+  <div
+    className="menu-card"
+    onClick={()=>
+      toggleSection("unfollow")
+    }
+  >
 
+    <UserX/>
 
+    <span>
+      Recently Unfollowed
+    </span>
 
 
-        </>
+    <ChevronRight/>
 
-      )}
 
+  </div>
 
 
 
 
 
-      </div>
+  {
+    section==="unfollow" &&
 
+    <UserList
 
-    </main>
+      users={
+        result.recentlyUnfollowed
+      }
+
+    />
+
+  }
+
+
+
+
+
+
+
+
+
+  <button
+
+    className="reset"
+
+    onClick={()=>
+      setResult(null)
+    }
+
+  >
+
+    <RefreshCcw size={18}/>
+
+    Nuova analisi
+
+
+  </button>
+
+
+
+
+
+
+
+  </>
+
+  )}
+
+
+
+
+
+
+  </div>
+
+
+  </main>
 
   );
+
 
 }
 
