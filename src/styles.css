@@ -2,9 +2,13 @@
   box-sizing: border-box;
 }
 
+
 body {
-  margin: 0;
-  min-height: 100vh;
+
+  margin:0;
+
+  min-height:100vh;
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -19,221 +23,219 @@ body {
       #e8e8ed
     );
 
-  color: #111;
+  color:#111;
+
 }
+
 
 
 #root {
-  min-height: 100vh;
+
+  min-height:100vh;
+
 }
+
 
 
 .app {
-  min-height: 100vh;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height:100vh;
 
-  padding: 24px;
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:24px;
+
 }
+
 
 
 .card {
 
-  width: 100%;
-  max-width: 420px;
+  width:100%;
 
-  padding: 32px;
+  max-width:420px;
 
-  border-radius: 32px;
+  padding:32px;
+
+  border-radius:32px;
 
   background:
-    rgba(255,255,255,0.75);
+    rgba(255,255,255,.75);
 
   backdrop-filter:
     blur(20px);
 
   box-shadow:
-    0 20px 60px
-    rgba(0,0,0,0.12);
+    0 20px 60px rgba(0,0,0,.12);
 
-  text-align: center;
+  text-align:center;
 
 }
+
 
 
 h1 {
 
-  font-size: 28px;
+  font-size:28px;
 
-  margin-bottom: 16px;
-
-  letter-spacing: -0.5px;
+  letter-spacing:-.5px;
 
 }
+
 
 
 p {
 
-  color: #666;
+  color:#666;
 
-  line-height: 1.5;
-
-  margin-bottom: 32px;
+  line-height:1.5;
 
 }
+
 
 
 .upload-button {
 
-  display: flex;
+  margin-top:25px;
 
-  align-items: center;
+  display:flex;
 
-  justify-content: center;
+  align-items:center;
 
-  gap: 10px;
+  justify-content:center;
 
+  gap:10px;
 
-  padding: 16px 24px;
+  padding:16px;
 
-  border-radius: 18px;
+  border-radius:18px;
 
-  background:
-    #000;
+  background:#000;
 
-  color:
-    white;
+  color:white;
 
-  font-weight:
-    600;
+  font-weight:600;
 
-  cursor:
-    pointer;
-
-  transition:
-    transform .2s ease;
+  cursor:pointer;
 
 }
 
-
-.upload-button:active {
-
-  transform:
-    scale(0.96);
-
-}
-
-h2 {
-  margin-top: 10px;
-  font-size: 24px;
-}
-
-
-h3 {
-  margin-top: 28px;
-  text-align: left;
-  font-size: 18px;
-}
-
-
-.card a {
-
-  display: block;
-
-  text-decoration: none;
-
-  color: #111;
-
-  background:
-    rgba(255,255,255,0.65);
-
-  margin: 8px 0;
-
-  padding: 14px 16px;
-
-  border-radius: 16px;
-
-  text-align: left;
-
-  font-weight: 600;
-
-  transition:
-    transform .15s ease,
-    background .15s ease;
-
-}
-
-
-.card a:active {
-
-  transform:
-    scale(0.96);
-
-}
 
 
 .stats {
 
-  display: grid;
+  display:grid;
 
-  grid-template-columns:
-    1fr 1fr;
+  grid-template-columns:1fr 1fr;
 
-  gap: 12px;
+  gap:12px;
 
-  margin: 20px 0;
+  margin:20px 0;
 
 }
+
 
 
 .stat-card {
 
-  padding: 18px;
+  padding:18px;
 
-  border-radius: 22px;
+  border-radius:22px;
 
   background:
-    rgba(255,255,255,0.7);
-
-  text-align: center;
-
-  box-shadow:
-    0 8px 20px
-    rgba(0,0,0,0.08);
+    rgba(255,255,255,.7);
 
 }
+
 
 
 .stat-card span {
 
-  display: block;
+  display:block;
 
-  color: #666;
+  color:#666;
 
-  font-size: 14px;
-
-  margin-bottom: 8px;
+  font-size:14px;
 
 }
+
 
 
 .stat-card strong {
 
-  font-size: 28px;
+  font-size:28px;
 
 }
+
 
 
 .warning {
 
   background:
-    rgba(255,220,220,0.8);
+    rgba(255,220,220,.8);
 
 }
-.card b {
 
-  font-size: 18px;
+
+
+.card a {
+
+  display:block;
+
+  padding:14px;
+
+  margin:8px 0;
+
+  border-radius:16px;
+
+  background:
+    rgba(255,255,255,.65);
+
+  color:#111;
+
+  text-decoration:none;
+
+  font-weight:600;
+
+}
+
+
+
+.bottom-nav {
+
+  margin-top:30px;
+
+  display:flex;
+
+  justify-content:space-around;
+
+  padding:12px;
+
+  border-radius:22px;
+
+  background:
+    rgba(255,255,255,.65);
+
+}
+
+
+
+.bottom-nav button {
+
+  border:0;
+
+  background:none;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  font-size:11px;
 
 }
