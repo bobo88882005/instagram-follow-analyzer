@@ -1,564 +1,138 @@
 import JSZip from "jszip";
-
-
-
-export type InstagramUser = {
-
-  username: string;
-
-  date?: string | null;
-
-};
-
-
-
-export type InstagramData = {
-
-  followers: InstagramUser[];
-
-  following: InstagramUser[];
-
-  pendingRequests: InstagramUser[];
-
-  receivedRequests: InstagramUser[];
-
-  recentlyUnfollowed: InstagramUser[];
-
-};
-
-
-
-
-
-
-
-function cleanUsername(
-  username:string
-) {
-
-
-  return username
-
-    .replace("@","")
-
-    .trim()
-
-    .toLowerCase();
-
-
-}
-
-
-
-
-
-
-
-
-function formatDate(
-  value:any
-) {
-
-
-  if(!value)
-    return null;
-
-
-
-  try {
-
-
-    const date =
-      new Date(value);
-
-
-
-    if(
-      isNaN(
-        date.getTime()
-      )
-    )
-      return null;
-
-
-
-
-    return date.toLocaleDateString(
-      "it-IT"
-    );
-
-
-
-  } catch {
-
-
-    return null;
-
-
-  }
-
-
-}
-
-
-
-
-
-
-
-
-function extractJsonUsers(
-  data:any
-):InstagramUser[] {
-
-
-  const users:InstagramUser[] = [];
-
-
-
-  if(
-    !Array.isArray(data)
-  )
-    return users;
-
-
-
-
-
-  data.forEach(
-    item => {
-
-
-      const username =
-
-        item?.string_list_data?.[0]
-        ?.value;
-
-
-
-      const timestamp =
-
-        item?.string_list_data?.[0]
-        ?.timestamp;
-
-
-
-
-
-      if(username){
-
-
-        users.push({
-
-          username:
-            cleanUsername(
-              username
-            ),
-
-
-          date:
-            timestamp
-            ?
-            formatDate(
-              timestamp * 1000
-            )
-            :
-            null
-
-        });
-
-
-      }
-
-
-    }
-
-  );
-
-
-
-  return users;
-
-
-}
-
-
-
-
-
-
-
-
-function extractHtmlUsers(
-  html:string
-):InstagramUser[] {
-
-
-  const users:InstagramUser[] = [];
-
-
-
-  const regex =
-    /<a[^>]*>(.*?)<\/a>/g;
-
-
-
-  let match;
-
-
-
-  while(
-    (match = regex.exec(html))
-    !== null
-  ){
-
-
-    const username =
-      match[1]
-      .replace(/<[^>]+>/g,"")
-      .trim();
-
-
-
-    if(
-      username
-    ){
-
-
-      users.push({
-
-        username:
-          cleanUsername(
-            username
-          ),
-
-        date:null
-
-      });
-
-
-    }
-
-
-  }
-
-
-
-  return users;
-
-
-}
-
-
-
-
-
-
-
-
-async function readFileContent(
-  zip:JSZip,
-  possiblePaths:string[]
-){
-
-
-  for(
-    const path of possiblePaths
-  ){
-
-
-    const file =
-      zip.file(path);
-
-
-
-    if(file)
-      return await file.async("string");
-
-
-  }
-
-
-
-  return null;
-
-
-}
-
-
-
-
-
-
+import { extractUsernames } from "./instagramParser";
 
 
 export async function readInstagramZip(
-  file:File
-):Promise<InstagramData>{
-
+  file: File
+) {
 
 
   const zip =
-    await JSZip.loadAsync(
-      file
-    );
+    await JSZip.loadAsync(file);
 
 
 
+  const result = {
 
+    followers: [],
 
-  let followers:InstagramUser[] = [];
+    following: [],
 
-  let following:InstagramUser[] = [];
+    pendingRequests: [],
 
-  let pendingRequests:InstagramUser[] = [];
+    receivedRequests: [],
 
-  let receivedRequests:InstagramUser[] = [];
+    recentlyUnfollowed: []
 
-  let recentlyUnfollowed:InstagramUser[] = [];
+  } as {
 
+    followers:string[];
 
+    following:string[];
 
+    pendingRequests:string[];
 
+    receivedRequests:string[];
 
+    recentlyUnfollowed:string[];
 
+  };
 
-  const jsonFiles =
-    Object.keys(zip.files)
-    .filter(
-      name =>
-        name.endsWith(".json")
-    );
 
 
+  for (
+    const filename of Object.keys(zip.files)
+  ) {
 
 
+    const item =
+      zip.files[filename];
 
 
+    if (item.dir)
+      continue;
 
-  for(
-    const filename of jsonFiles
-  ){
 
 
-    const content =
-      await zip
-      .file(filename)!
-      .async("string");
+    const name =
+      filename.toLowerCase();
 
 
 
-    try {
+    if (!name.endsWith(".html"))
+      continue;
 
 
-      const json =
-        JSON.parse(
-          content
-        );
 
-
-
-      const users =
-        extractJsonUsers(
-          json
-        );
-
-
-
-      if(
-        filename.includes("followers")
-      )
-        followers.push(...users);
-
-
-
-      else if(
-        filename.includes("following")
-      )
-        following.push(...users);
-
-
-
-      else if(
-        filename.includes("pending")
-      )
-        pendingRequests.push(...users);
-
-
-
-      else if(
-        filename.includes("requested")
-      )
-        receivedRequests.push(...users);
-
-
-
-    } catch {
-
-    }
-
-
-  }
-
-
-
-
-
-
-
-
-
-  const htmlFiles =
-    Object.keys(zip.files)
-    .filter(
-      name =>
-        name.endsWith(".html")
-    );
-
-
-
-
-
-
-
-  for(
-    const filename of htmlFiles
-  ){
-
-
-    const content =
-      await zip
-      .file(filename)!
-      .async("string");
+    const html =
+      await item.async("string");
 
 
 
     const users =
-      extractHtmlUsers(
-        content
-      );
+      extractUsernames(html);
 
 
 
-    if(
-      filename.includes("followers")
-    )
-      followers.push(...users);
+    if (
+      name.includes("followers_1")
+    ) {
+
+      result.followers =
+        users;
+
+    }
 
 
+    else if (
+      name.endsWith("following.html")
+    ) {
 
-    else if(
-      filename.includes("following")
-    )
-      following.push(...users);
+      result.following =
+        users;
 
-
-
-    else if(
-      filename.includes("pending")
-    )
-      pendingRequests.push(...users);
+    }
 
 
-
-    else if(
-      filename.includes("requested")
-    )
-      receivedRequests.push(...users);
-
-
-
-  }
-
-
-
-
-
-
-
-
-  function unique(
-    list:InstagramUser[]
-  ){
-
-
-    const map =
-      new Map<string,InstagramUser>();
-
-
-
-    list.forEach(
-      user => {
-
-
-        if(
-          !map.has(
-            user.username
-          )
-        ){
-
-          map.set(
-            user.username,
-            user
-          );
-
-        }
-
-
-      }
-
-    );
-
-
-
-    return Array.from(
-      map.values()
-    );
-
-
-  }
-
-
-
-
-
-
-
-
-  return {
-
-
-    followers:
-      unique(
-        followers
-      ),
-
-
-    following:
-      unique(
-        following
-      ),
-
-
-    pendingRequests:
-      unique(
-        pendingRequests
-      ),
-
-
-    receivedRequests:
-      unique(
-        receivedRequests
-      ),
-
-
-    recentlyUnfollowed:
-      unique(
-        recentlyUnfollowed
+    else if (
+      name.includes(
+        "pending_follow_requests"
       )
+    ) {
+
+      result.pendingRequests =
+        users;
+
+    }
 
 
-  };
+    else if (
+      name.includes(
+        "follow_requests_you"
+      )
+    ) {
 
+      result.receivedRequests =
+        users;
+
+    }
+
+
+    else if (
+      name.includes(
+        "recently_unfollowed"
+      )
+    ) {
+
+      result.recentlyUnfollowed =
+        users;
+
+    }
+
+  }
+
+
+
+  return result;
 
 }
