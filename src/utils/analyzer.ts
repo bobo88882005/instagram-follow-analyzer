@@ -1,70 +1,177 @@
-export interface InstagramData {
+type InstagramData = {
 
   followers: string[];
 
   following: string[];
 
-  pendingRequests: string[];
+  pendingRequests?: string[];
 
-  receivedRequests: string[];
+  receivedRequests?: string[];
 
-  recentlyUnfollowed: string[];
+  recentlyUnfollowed?: string[];
+
+};
+
+
+
+function cleanUsers(users:string[] = []) {
+
+  const blacklist = [
+
+    "instagram user",
+
+    "instagramuser",
+
+    "deleted",
+
+    "deleted account",
+
+    "unknown",
+
+    "null",
+
+    "user"
+
+  ];
+
+
+
+  return Array.from(
+
+    new Set(
+
+      users
+
+        .map(user =>
+          user
+            .replace("@","")
+            .trim()
+            .toLowerCase()
+        )
+
+        .filter(user => {
+
+          if (!user)
+            return false;
+
+
+          if (
+            blacklist.some(
+              item =>
+              user.includes(item)
+            )
+          )
+            return false;
+
+
+
+          return /^[a-z0-9._]{2,}$/.test(user);
+
+        })
+
+    )
+
+  );
 
 }
 
 
 
+
+
 export function analyzeInstagram(
-  data: InstagramData
+  data:InstagramData
 ) {
 
 
   const followers =
-    new Set(
+    cleanUsers(
       data.followers
     );
 
 
   const following =
-    new Set(
+    cleanUsers(
       data.following
     );
 
 
 
+  const followersSet =
+    new Set(followers);
+
+
+
+  const followingSet =
+    new Set(following);
+
+
+
+
+
   const notFollowingBack =
-    Array.from(
-      following
-    ).filter(
+    following.filter(
       user =>
-        !followers.has(user)
+      !followersSet.has(user)
     );
+
+
+
+
+
+  const pendingRequests =
+    cleanUsers(
+      data.pendingRequests || []
+    );
+
+
+
+  const receivedRequests =
+    cleanUsers(
+      data.receivedRequests || []
+    );
+
+
+
+  const recentlyUnfollowed =
+    cleanUsers(
+      data.recentlyUnfollowed || []
+    );
+
+
 
 
 
   return {
 
+
+    followers,
+
+
+    following,
+
+
     followersCount:
-      data.followers.length,
+      followers.length,
+
 
 
     followingCount:
-      data.following.length,
+      following.length,
+
 
 
     notFollowingBack,
 
 
-    pendingRequests:
-      data.pendingRequests,
+    pendingRequests,
 
 
-    receivedRequests:
-      data.receivedRequests,
+    receivedRequests,
 
 
-    recentlyUnfollowed:
-      data.recentlyUnfollowed
+    recentlyUnfollowed
+
 
   };
 
