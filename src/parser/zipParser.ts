@@ -6,47 +6,77 @@ export async function readInstagramZip(
   file: File
 ) {
 
-  const zip = await JSZip.loadAsync(file);
+
+  const zip =
+    await JSZip.loadAsync(file);
+
 
 
   const result = {
 
-    followers: [] as string[],
-    following: [] as string[],
-    pendingRequests: [] as string[],
-    receivedRequests: [] as string[],
-    recentlyUnfollowed: [] as string[]
+    followers: [],
+
+    following: [],
+
+    pendingRequests: [],
+
+    receivedRequests: [],
+
+    recentlyUnfollowed: []
+
+  } as {
+
+    followers:string[];
+
+    following:string[];
+
+    pendingRequests:string[];
+
+    receivedRequests:string[];
+
+    recentlyUnfollowed:string[];
 
   };
 
 
-  for (const filename of Object.keys(zip.files)) {
+
+  for (
+    const filename of Object.keys(zip.files)
+  ) {
 
 
-    const entry = zip.files[filename];
+    const item =
+      zip.files[filename];
 
 
-    if (entry.dir) continue;
-
-
-    const lower =
-      filename.toLowerCase();
-
-
-    if (!lower.endsWith(".html"))
+    if (item.dir)
       continue;
 
 
-    const content =
-      await entry.async("string");
+
+    const name =
+      filename.toLowerCase();
+
+
+
+    if (!name.endsWith(".html"))
+      continue;
+
+
+
+    const html =
+      await item.async("string");
+
 
 
     const users =
-      extractUsernames(content);
+      extractUsernames(html);
 
 
 
-    if (lower.includes("followers_1")) {
+    if (
+      name.includes("followers_1")
+    ) {
 
       result.followers =
         users;
@@ -55,7 +85,7 @@ export async function readInstagramZip(
 
 
     else if (
-      lower.includes("following")
+      name.endsWith("following.html")
     ) {
 
       result.following =
@@ -65,7 +95,9 @@ export async function readInstagramZip(
 
 
     else if (
-      lower.includes("pending_follow_requests")
+      name.includes(
+        "pending_follow_requests"
+      )
     ) {
 
       result.pendingRequests =
@@ -75,7 +107,9 @@ export async function readInstagramZip(
 
 
     else if (
-      lower.includes("follow_requests_you")
+      name.includes(
+        "follow_requests_you"
+      )
     ) {
 
       result.receivedRequests =
@@ -85,7 +119,9 @@ export async function readInstagramZip(
 
 
     else if (
-      lower.includes("recently_unfollowed")
+      name.includes(
+        "recently_unfollowed"
+      )
     ) {
 
       result.recentlyUnfollowed =
@@ -94,6 +130,7 @@ export async function readInstagramZip(
     }
 
   }
+
 
 
   return result;
