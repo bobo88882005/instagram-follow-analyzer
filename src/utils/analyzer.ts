@@ -14,7 +14,134 @@ type InstagramData = {
 
 
 
-function normalizeUser(user:string) {
+const manualInactiveUsers = [
+
+  "_u",
+  "andrea.old",
+  "simo.valmont",
+  "discor_dantes",
+  "matijahefler",
+  "fightingsoul3000",
+  "emilia_lop_",
+  "manfromstel",
+  "bruhlickd",
+  "mario95simonetti",
+  "andreavitto",
+  "cadestellenti",
+  "branlio88",
+  "ut1986",
+  "catsguardian",
+  "iamflaviofarinos",
+  "zacharias_longuelune",
+  "facualbanoinderkum",
+  "riccardoprnd",
+  "achcec28",
+  "manos.soave",
+  "amvy79",
+  "adelina_buzoku",
+  "mich_re",
+  "drbartucci",
+  "hey_misterboy",
+  "alexcamb",
+  "roc.er1",
+  "daniruro90",
+  "miguero_93",
+  "diego.puntot",
+  "alessiobasso_____",
+  "annasebastiani_",
+  "_littlepear_",
+  "dimatteorlati",
+  "_federica.leone",
+  "_chiaraguarente",
+  "91_rzc",
+  "wuoltercrowe",
+  "travel.fabi",
+  "i_x_t_a_p_a_t_x_i",
+  "alex.ri1",
+  "unchatnoir23",
+  "fabrizio_trio",
+  "sz.batara",
+  "iampinaycebuana",
+  "iq.12k",
+  "gemma_febe",
+  "maajomaldonado",
+  "miadomenica.official",
+  "zu.dance",
+  "giorgos_dilo",
+  "castanon.adriana",
+  "mirazh.x",
+  "sarahla_bleisure",
+  "oekotante_",
+  "bavivie",
+  "_karinreimann",
+  "marco2808",
+  "justinliu00001",
+  "sonjacal33",
+  "daniprado.s",
+  "elenamille04",
+  "_arissandra_",
+  "gabriele_masca",
+  "nic_zzi",
+  "eurodriguesmaria",
+  "angdcx",
+  "castlesintheair80",
+  "lovex_17",
+  "viciuus",
+  "nowayjohnstrong",
+  "soyhorhe",
+  "josefersinelnando",
+  "dogtorpropofol",
+  "just.luk3",
+  "asierbodes3",
+  "im_who_im_ming_",
+  "carmineroger",
+  "maria_tis_geitonias__",
+  "alex_kova80",
+  "micheleguglielmo",
+  "itssadrijajedisson",
+  "ljr17_97",
+  "bjelotschka",
+  "campisi.simona",
+  "ioeio91",
+  "xofferet",
+  "ileo12",
+  "itsmejaackoog",
+  "letswalkwithflo",
+  "826271811919181716hah82881",
+  "cris_valp",
+  "xsimoneinguantax",
+  "indianoss",
+  "profiloinattivo8",
+  "caos_",
+  "anothertommi",
+  "leonardo_mira",
+  "johnvalenmart",
+  "william_woodryan",
+  "dave_chain",
+  "luanalvarenga",
+  "chicocantabru",
+  "dsmp_trc",
+  "emio_l",
+  "maurochristie._",
+  "demian_green",
+  "edu_lozano90",
+  "kurtleburger",
+  "domemi",
+  "gtet",
+  "lorenzo_fr_",
+  "lemiroirdeneptune",
+  "davdzd",
+  "c_christian_",
+  "domenicodome1",
+  "polofresco"
+
+];
+
+
+
+
+
+function normalize(user:string) {
 
   return user
     .replace("@","")
@@ -22,6 +149,8 @@ function normalizeUser(user:string) {
     .toLowerCase();
 
 }
+
+
 
 
 
@@ -33,10 +162,8 @@ function cleanUsers(users:string[] = []) {
     "instagram user",
     "instagramuser",
     "deleted",
-    "deleted account",
     "unknown",
     "null",
-    "user",
     "profile"
 
   ];
@@ -49,32 +176,27 @@ function cleanUsers(users:string[] = []) {
 
       users
 
-        .map(normalizeUser)
+      .map(normalize)
 
-        .filter(user => {
-
-
-          if (!user)
-            return false;
+      .filter(user => {
 
 
+        if (!user)
+          return false;
 
-          if (
 
-            blacklist.some(
-              item =>
-              user.includes(item)
-            )
-
+        if (
+          blacklist.some(
+            x => user.includes(x)
           )
-            return false;
+        )
+          return false;
 
 
+        return /^[a-z0-9._]{2,}$/.test(user);
 
-          return /^[a-z0-9._]{2,}$/.test(user);
 
-
-        })
+      })
 
     )
 
@@ -94,17 +216,8 @@ function findPossibleInactive(
   return users.filter(user => {
 
 
-    // username molto sospetti
-
     if (
-      user.length < 3
-    )
-      return true;
-
-
-
-    if (
-      user.includes("deleted")
+      manualInactiveUsers.includes(user)
     )
       return true;
 
@@ -117,11 +230,17 @@ function findPossibleInactive(
 
 
 
+    if (
+      user.length < 3
+    )
+      return true;
+
+
+
     return false;
 
 
   });
-
 
 }
 
@@ -134,29 +253,22 @@ export function analyzeInstagram(
 ) {
 
 
-
   const followers =
-    cleanUsers(
-      data.followers
-    );
+    cleanUsers(data.followers);
 
 
 
   const following =
-    cleanUsers(
-      data.following
-    );
+    cleanUsers(data.following);
 
 
 
   const followersSet =
-    new Set(
-      followers
-    );
+    new Set(followers);
 
 
 
-  const notFollowingBack =
+  const allNotFollowingBack =
 
     following.filter(
 
@@ -168,28 +280,47 @@ export function analyzeInstagram(
 
 
 
+  const possibleInactive =
 
-  const pendingRequests =
-    cleanUsers(
-      data.pendingRequests
-      || []
+    Array.from(
+
+      new Set([
+
+        ...findPossibleInactive(
+          allNotFollowingBack
+        ),
+
+        ...allNotFollowingBack.filter(
+          user =>
+          manualInactiveUsers.includes(user)
+        )
+
+      ])
+
     );
 
 
 
-  const receivedRequests =
-    cleanUsers(
-      data.receivedRequests
-      || []
+
+
+  const inactiveSet =
+    new Set(
+      possibleInactive
     );
 
 
 
-  const recentlyUnfollowed =
-    cleanUsers(
-      data.recentlyUnfollowed
-      || []
+
+
+  const notFollowingBack =
+
+    allNotFollowingBack.filter(
+
+      user =>
+      !inactiveSet.has(user)
+
     );
+
 
 
 
@@ -210,25 +341,31 @@ export function analyzeInstagram(
       following.length,
 
 
-
     notFollowingBack,
 
 
+    possibleInactive,
 
-    possibleInactive:
-      findPossibleInactive(
-        notFollowingBack
+
+
+    pendingRequests:
+      cleanUsers(
+        data.pendingRequests || []
       ),
 
 
 
-    pendingRequests,
+    receivedRequests:
+      cleanUsers(
+        data.receivedRequests || []
+      ),
 
 
-    receivedRequests,
 
-
-    recentlyUnfollowed
+    recentlyUnfollowed:
+      cleanUsers(
+        data.recentlyUnfollowed || []
+      )
 
 
   };
