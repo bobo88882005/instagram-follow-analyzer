@@ -1,241 +1,42 @@
-* {
-  box-sizing: border-box;
-}
-
-
-body {
-
-  margin:0;
-
-  min-height:100vh;
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "Segoe UI",
-    sans-serif;
-
-  background:
-    linear-gradient(
-      135deg,
-      #f5f5f7,
-      #e8e8ed
-    );
-
-  color:#111;
-
-}
-
-
-
-#root {
-
-  min-height:100vh;
-
-}
-
-
-
-.app {
-
-  min-height:100vh;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  padding:24px;
-
-}
-
-
-
-.card {
-
-  width:100%;
-
-  max-width:420px;
-
-  padding:32px;
-
-  border-radius:32px;
-
-  background:
-    rgba(255,255,255,.75);
-
-  backdrop-filter:
-    blur(20px);
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,.12);
-
-  text-align:center;
-
-}
-
-
-
-h1 {
-
-  font-size:28px;
-
-  letter-spacing:-.5px;
-
-}
-
-
-
-p {
-
-  color:#666;
-
-  line-height:1.5;
-
-}
-
-
-
-.upload-button {
+.reset-button {
 
   margin-top:25px;
 
-  display:flex;
+  width:100%;
 
-  align-items:center;
+  padding:15px;
 
-  justify-content:center;
-
-  gap:10px;
-
-  padding:16px;
+  border:0;
 
   border-radius:18px;
 
-  background:#000;
+  background:#111;
 
   color:white;
 
   font-weight:600;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:8px;
 
   cursor:pointer;
 
 }
 
 
-
-.stats {
-
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:12px;
-
-  margin:20px 0;
-
-}
-
-
-
-.stat-card {
-
-  padding:18px;
-
-  border-radius:22px;
-
-  background:
-    rgba(255,255,255,.7);
-
-}
-
-
-
-.stat-card span {
-
-  display:block;
-
-  color:#666;
-
-  font-size:14px;
-
-}
-
-
-
-.stat-card strong {
-
-  font-size:28px;
-
-}
-
-
-
-.warning {
-
-  background:
-    rgba(255,220,220,.8);
-
-}
-
-
-
-.card a {
-
-  display:block;
-
-  padding:14px;
-
-  margin:8px 0;
-
-  border-radius:16px;
-
-  background:
-    rgba(255,255,255,.65);
-
-  color:#111;
-
-  text-decoration:none;
-
-  font-weight:600;
-
-}
-
-
-
-.bottom-nav {
-
-  margin-top:30px;
+h3 {
 
   display:flex;
-
-  justify-content:space-around;
-
-  padding:12px;
-
-  border-radius:22px;
-
-  background:
-    rgba(255,255,255,.65);
-
-}
-
-
-
-.bottom-nav button {
-
-  border:0;
-
-  background:none;
-
-  display:flex;
-
-  flex-direction:column;
 
   align-items:center;
 
-  font-size:11px;
+  gap:8px;
+
+  margin-top:28px;
 
 }
