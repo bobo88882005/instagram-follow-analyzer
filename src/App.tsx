@@ -125,27 +125,62 @@ function App() {
           <div>
 
 
-            <h2>
-              Risultati
-            </h2>
+<h2>
+  Dashboard
+</h2>
 
 
-            <p>
-              Followers:
-              <b>
-                {" "}
-                {result.followersCount}
-              </b>
-            </p>
+<div className="stats">
 
 
-            <p>
-              Following:
-              <b>
-                {" "}
-                {result.followingCount}
-              </b>
-            </p>
+  <div className="stat-card">
+    <span>
+      Followers
+    </span>
+
+    <strong>
+      {result.followersCount}
+    </strong>
+  </div>
+
+
+
+  <div className="stat-card">
+    <span>
+      Following
+    </span>
+
+    <strong>
+      {result.followingCount}
+    </strong>
+  </div>
+
+
+
+  <div className="stat-card warning">
+    <span>
+      Non ti seguono
+    </span>
+
+    <strong>
+      {result.notFollowingBack.length}
+    </strong>
+  </div>
+
+
+
+  <div className="stat-card">
+    <span>
+      Pending
+    </span>
+
+    <strong>
+      {result.pendingRequests.length}
+    </strong>
+  </div>
+
+
+</div>
 
 
 
