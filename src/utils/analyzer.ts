@@ -14,23 +14,30 @@ type InstagramData = {
 
 
 
+function normalizeUser(user:string) {
+
+  return user
+    .replace("@","")
+    .trim()
+    .toLowerCase();
+
+}
+
+
+
 function cleanUsers(users:string[] = []) {
+
 
   const blacklist = [
 
     "instagram user",
-
     "instagramuser",
-
     "deleted",
-
     "deleted account",
-
     "unknown",
-
     "null",
-
-    "user"
+    "user",
+    "profile"
 
   ];
 
@@ -42,30 +49,30 @@ function cleanUsers(users:string[] = []) {
 
       users
 
-        .map(user =>
-          user
-            .replace("@","")
-            .trim()
-            .toLowerCase()
-        )
+        .map(normalizeUser)
 
         .filter(user => {
+
 
           if (!user)
             return false;
 
 
+
           if (
+
             blacklist.some(
               item =>
               user.includes(item)
             )
+
           )
             return false;
 
 
 
           return /^[a-z0-9._]{2,}$/.test(user);
+
 
         })
 
@@ -79,15 +86,60 @@ function cleanUsers(users:string[] = []) {
 
 
 
+function findPossibleInactive(
+  users:string[]
+) {
+
+
+  return users.filter(user => {
+
+
+    // username molto sospetti
+
+    if (
+      user.length < 3
+    )
+      return true;
+
+
+
+    if (
+      user.includes("deleted")
+    )
+      return true;
+
+
+
+    if (
+      /^[0-9._]+$/.test(user)
+    )
+      return true;
+
+
+
+    return false;
+
+
+  });
+
+
+}
+
+
+
+
+
 export function analyzeInstagram(
   data:InstagramData
 ) {
+
 
 
   const followers =
     cleanUsers(
       data.followers
     );
+
 
 
   const following =
@@ -98,21 +150,19 @@ export function analyzeInstagram(
 
 
   const followersSet =
-    new Set(followers);
-
-
-
-  const followingSet =
-    new Set(following);
-
-
+    new Set(
+      followers
+    );
 
 
 
   const notFollowingBack =
+
     following.filter(
+
       user =>
       !followersSet.has(user)
+
     );
 
 
@@ -121,23 +171,25 @@ export function analyzeInstagram(
 
   const pendingRequests =
     cleanUsers(
-      data.pendingRequests || []
+      data.pendingRequests
+      || []
     );
 
 
 
   const receivedRequests =
     cleanUsers(
-      data.receivedRequests || []
+      data.receivedRequests
+      || []
     );
 
 
 
   const recentlyUnfollowed =
     cleanUsers(
-      data.recentlyUnfollowed || []
+      data.recentlyUnfollowed
+      || []
     );
-
 
 
 
@@ -147,13 +199,11 @@ export function analyzeInstagram(
 
     followers,
 
-
     following,
 
 
     followersCount:
       followers.length,
-
 
 
     followingCount:
@@ -162,6 +212,14 @@ export function analyzeInstagram(
 
 
     notFollowingBack,
+
+
+
+    possibleInactive:
+      findPossibleInactive(
+        notFollowingBack
+      ),
+
 
 
     pendingRequests,
@@ -174,5 +232,6 @@ export function analyzeInstagram(
 
 
   };
+
 
 }
