@@ -15,23 +15,18 @@ import { analyzeInstagram } from "./utils/analyzer";
 
 function App() {
 
-  const [result, setResult] =
-    useState<any>(null);
+  const [result, setResult] = useState<any>(null);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
 
   async function handleUpload(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
 
-    const file =
-      event.target.files?.[0];
+    const file = event.target.files?.[0];
 
-
-    if (!file)
-      return;
+    if (!file) return;
 
 
     setLoading(true);
@@ -50,12 +45,12 @@ function App() {
       setResult(analysis);
 
 
-    } catch(error) {
+    } catch (error) {
 
       console.error(error);
 
       alert(
-        "Errore nella lettura dell'archivio Instagram"
+        "Errore nella lettura del file Instagram"
       );
 
     }
@@ -79,50 +74,51 @@ function App() {
     users,
     emptyText
   }: {
-    users:string[],
-    emptyText:string
+    users: string[];
+    emptyText: string;
   }) {
 
 
-    if (!users.length) {
+    if (!users || users.length === 0) {
 
       return (
-        <p>
+        <div className="empty">
           {emptyText}
-        </p>
+        </div>
       );
 
     }
 
 
+
     return (
 
-      <div>
+      <div className="user-list">
 
         {
-          users.map(
-            (user)=>(
+          users.map((user:string)=>(
 
-              <a
+            <a
 
-                key={user}
+              key={user}
 
-                href={
-                  `https://www.instagram.com/${user}/`
-                }
+              href={
+                `https://www.instagram.com/${user}/`
+              }
 
-                target="_blank"
+              target="_blank"
 
-                rel="noreferrer"
+              rel="noreferrer"
 
-              >
+            >
 
+              <span>
                 @{user}
+              </span>
 
-              </a>
+            </a>
 
-            )
-          )
+          ))
         }
 
       </div>
@@ -146,14 +142,13 @@ function App() {
         </h1>
 
 
-
         {!result && (
 
           <>
 
             <p>
-              Analizza follower, following
-              e richieste Instagram.
+              Carica il tuo archivio Instagram
+              per analizzare follower e richieste.
             </p>
 
 
@@ -161,10 +156,9 @@ function App() {
 
               <Upload size={22}/>
 
-
               {
                 loading
-                ? "Analisi..."
+                ? "Analisi in corso..."
                 : "Importa ZIP Instagram"
               }
 
@@ -199,10 +193,12 @@ function App() {
             </h2>
 
 
+
             <div className="stats">
 
 
               <div className="stat-card">
+
                 <span>
                   Followers
                 </span>
@@ -210,6 +206,7 @@ function App() {
                 <strong>
                   {result.followersCount}
                 </strong>
+
               </div>
 
 
@@ -259,60 +256,93 @@ function App() {
 
 
 
-            <h3>
-              <UserMinus size={18}/>
-              Non ti seguono
-            </h3>
-
-            <UserList
-              users={result.notFollowingBack}
-              emptyText="Tutti ti seguono 🎉"
-            />
 
 
+            <section className="section">
 
-            <h3>
-              <Clock size={18}/>
-              Pending Requests
-            </h3>
+              <h3>
+                <UserMinus size={18}/>
+                Non ti seguono
+              </h3>
 
-            <UserList
 
-              users={result.pendingRequests}
+              <UserList
 
-              emptyText="Nessuna richiesta pendente"
+                users={result.notFollowingBack}
 
-            />
+                emptyText="Tutti ti seguono 🎉"
+
+              />
+
+            </section>
 
 
 
-            <h3>
-              <UserPlus size={18}/>
-              Richieste ricevute
-            </h3>
-
-            <UserList
-
-              users={result.receivedRequests}
-
-              emptyText="Nessuna richiesta ricevuta"
-
-            />
 
 
+            <section className="section">
 
-            <h3>
-              <UserX size={18}/>
-              Recentemente unfollowati
-            </h3>
+              <h3>
+                <Clock size={18}/>
+                Pending Requests
+              </h3>
 
-            <UserList
 
-              users={result.recentlyUnfollowed}
+              <UserList
 
-              emptyText="Nessun unfollow recente"
+                users={result.pendingRequests}
 
-            />
+                emptyText="Nessuna richiesta pendente"
+
+              />
+
+            </section>
+
+
+
+
+
+            <section className="section">
+
+              <h3>
+                <UserPlus size={18}/>
+                Richieste ricevute
+              </h3>
+
+
+              <UserList
+
+                users={result.receivedRequests}
+
+                emptyText="Nessuna richiesta ricevuta"
+
+              />
+
+            </section>
+
+
+
+
+
+            <section className="section">
+
+              <h3>
+                <UserX size={18}/>
+                Recently Unfollowed
+              </h3>
+
+
+              <UserList
+
+                users={result.recentlyUnfollowed}
+
+                emptyText="Nessun unfollow recente"
+
+              />
+
+            </section>
+
+
 
 
 
@@ -332,23 +362,37 @@ function App() {
 
 
 
+
+
             <nav className="bottom-nav">
 
+
               <button>
+
                 <Home size={22}/>
+
                 Home
+
               </button>
 
 
+
               <button>
+
                 <UserMinus size={22}/>
+
                 Non seguono
+
               </button>
 
 
+
               <button>
+
                 <Clock size={22}/>
+
                 Pending
+
               </button>
 
 
