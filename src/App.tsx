@@ -1,12 +1,12 @@
 import { useState } from "react";
 import {
   Upload,
-  Home,
-  UserMinus,
   Clock,
-  RefreshCcw,
   UserPlus,
-  UserX
+  UserX,
+  RefreshCcw,
+  ChevronRight,
+  Users
 } from "lucide-react";
 
 import { readInstagramZip } from "./parser/zipParser";
@@ -16,17 +16,19 @@ import { analyzeInstagram } from "./utils/analyzer";
 function App() {
 
   const [result, setResult] = useState<any>(null);
-
   const [loading, setLoading] = useState(false);
+  const [section, setSection] = useState<string | null>(null);
+
 
 
   async function handleUpload(
-    event: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>
   ) {
 
-    const file = event.target.files?.[0];
+    const file = e.target.files?.[0];
 
-    if (!file) return;
+    if (!file)
+      return;
 
 
     setLoading(true);
@@ -45,9 +47,9 @@ function App() {
       setResult(analysis);
 
 
-    } catch (error) {
+    } catch(err) {
 
-      console.error(error);
+      console.error(err);
 
       alert(
         "Errore nella lettura del file Instagram"
@@ -62,9 +64,12 @@ function App() {
 
 
 
-  function resetApp() {
+  function instagramUrl(user:string) {
 
-    setResult(null);
+    return (
+      "https://www.instagram.com/" +
+      encodeURIComponent(user)
+    );
 
   }
 
@@ -72,10 +77,10 @@ function App() {
 
   function UserList({
     users,
-    emptyText
+    limit
   }: {
-    users: string[];
-    emptyText: string;
+    users:string[],
+    limit?:number
   }) {
 
 
@@ -83,11 +88,17 @@ function App() {
 
       return (
         <div className="empty">
-          {emptyText}
+          Nessun risultato
         </div>
       );
 
     }
+
+
+    const list =
+      limit
+      ? users.slice(0,limit)
+      : users;
 
 
 
@@ -96,25 +107,20 @@ function App() {
       <div className="user-list">
 
         {
-          users.map((user:string)=>(
+          list.map(user => (
 
             <a
-
               key={user}
-
-              href={
-                `https://www.instagram.com/${user}/`
-              }
-
+              href={instagramUrl(user)}
               target="_blank"
-
-              rel="noreferrer"
-
+              rel="noopener noreferrer"
             >
 
               <span>
                 @{user}
               </span>
+
+              <ChevronRight size={18}/>
 
             </a>
 
@@ -129,47 +135,63 @@ function App() {
 
 
 
+  function reset() {
+
+    setResult(null);
+    setSection(null);
+
+  }
+
+
 
   return (
 
-    <div className="app">
+    <main className="app">
+
+
+      <div className="background-gradient"/>
+
 
       <div className="card">
-
-
-        <h1>
-          Instagram Follow Analyzer
-        </h1>
 
 
         {!result && (
 
           <>
 
-            <p>
-              Carica il tuo archivio Instagram
-              per analizzare follower e richieste.
+            <div className="logo">
+
+              Instagram Analyzer
+
+            </div>
+
+
+            <p className="subtitle">
+
+              Scopri chi non ti segue più
+
             </p>
+
 
 
             <label className="upload-button">
 
-              <Upload size={22}/>
+              <Upload size={20}/>
 
               {
                 loading
-                ? "Analisi in corso..."
-                : "Importa ZIP Instagram"
+                ? "Analisi..."
+                : "Carica archivio ZIP"
               }
 
 
               <input
 
+                hidden
+
                 type="file"
 
                 accept=".zip"
-
-                hidden
 
                 onChange={handleUpload}
 
@@ -177,9 +199,11 @@ function App() {
 
             </label>
 
+
           </>
 
         )}
+
 
 
 
@@ -188,69 +212,97 @@ function App() {
           <>
 
 
-            <h2>
-              Dashboard
-            </h2>
+            <header>
+
+              <h1>
+                Dashboard
+              </h1>
+
+
+              <div className="stats">
+
+
+                <div>
+
+                  <small>
+                    Followers
+                  </small>
+
+                  <strong>
+                    {result.followersCount}
+                  </strong>
+
+                </div>
 
 
 
-            <div className="stats">
+                <div>
+
+                  <small>
+                    Following
+                  </small>
+
+                  <strong>
+                    {result.followingCount}
+                  </strong>
+
+                </div>
 
 
-              <div className="stat-card">
-
-                <span>
-                  Followers
-                </span>
-
-                <strong>
-                  {result.followersCount}
-                </strong>
 
               </div>
 
 
-
-              <div className="stat-card">
-
-                <span>
-                  Following
-                </span>
-
-                <strong>
-                  {result.followingCount}
-                </strong>
-
-              </div>
+            </header>
 
 
 
-              <div className="stat-card warning">
-
-                <span>
-                  Non ti seguono
-                </span>
-
-                <strong>
-                  {result.notFollowingBack.length}
-                </strong>
-
-              </div>
 
 
+            <section className="main-section">
 
-              <div className="stat-card">
 
-                <span>
-                  Pending
-                </span>
+              <h2>
 
-                <strong>
-                  {result.pendingRequests.length}
-                </strong>
+                <Users size={20}/>
 
-              </div>
+                Non ti seguono
 
+              </h2>
+
+
+              <UserList
+
+                users={
+                  result.notFollowingBack
+                }
+
+                limit={150}
+
+              />
+
+
+            </section>
+
+
+
+
+
+            <div
+
+              className="menu-card"
+
+              onClick={() =>
+                setSection("pending")
+              }
+
+            >
+
+              <Clock/>
+
+              Pending Requests
+
+              <ChevronRight/>
 
             </div>
 
@@ -258,89 +310,121 @@ function App() {
 
 
 
-            <section className="section">
+            <div
 
-              <h3>
-                <UserMinus size={18}/>
-                Non ti seguono
-              </h3>
+              className="menu-card"
 
+              onClick={() =>
+                setSection("received")
+              }
 
-              <UserList
+            >
 
-                users={result.notFollowingBack}
+              <UserPlus/>
 
-                emptyText="Tutti ti seguono 🎉"
+              Richieste ricevute
 
-              />
+              <ChevronRight/>
 
-            </section>
-
-
-
-
-
-            <section className="section">
-
-              <h3>
-                <Clock size={18}/>
-                Pending Requests
-              </h3>
-
-
-              <UserList
-
-                users={result.pendingRequests}
-
-                emptyText="Nessuna richiesta pendente"
-
-              />
-
-            </section>
+            </div>
 
 
 
 
 
-            <section className="section">
+            <div
 
-              <h3>
-                <UserPlus size={18}/>
-                Richieste ricevute
-              </h3>
+              className="menu-card"
 
+              onClick={() =>
+                setSection("unfollow")
+              }
 
-              <UserList
+            >
 
-                users={result.receivedRequests}
+              <UserX/>
 
-                emptyText="Nessuna richiesta ricevuta"
+              Recently Unfollowed
 
-              />
+              <ChevronRight/>
 
-            </section>
-
-
+            </div>
 
 
 
-            <section className="section">
-
-              <h3>
-                <UserX size={18}/>
-                Recently Unfollowed
-              </h3>
 
 
-              <UserList
 
-                users={result.recentlyUnfollowed}
+            {
+              section === "pending" &&
 
-                emptyText="Nessun unfollow recente"
+              <section className="popup-section">
 
-              />
+                <h2>
+                  Pending Requests
+                </h2>
 
-            </section>
+
+                <UserList
+
+                  users={
+                    result.pendingRequests
+                  }
+
+                />
+
+              </section>
+
+            }
+
+
+
+            {
+              section === "received" &&
+
+              <section className="popup-section">
+
+                <h2>
+                  Richieste ricevute
+                </h2>
+
+
+                <UserList
+
+                  users={
+                    result.receivedRequests
+                  }
+
+                />
+
+              </section>
+
+            }
+
+
+
+
+            {
+              section === "unfollow" &&
+
+              <section className="popup-section">
+
+                <h2>
+                  Recently Unfollowed
+                </h2>
+
+
+                <UserList
+
+                  users={
+                    result.recentlyUnfollowed
+                  }
+
+                />
+
+              </section>
+
+            }
 
 
 
@@ -348,9 +432,9 @@ function App() {
 
             <button
 
-              className="reset-button"
+              className="reset"
 
-              onClick={resetApp}
+              onClick={reset}
 
             >
 
@@ -362,43 +446,6 @@ function App() {
 
 
 
-
-
-            <nav className="bottom-nav">
-
-
-              <button>
-
-                <Home size={22}/>
-
-                Home
-
-              </button>
-
-
-
-              <button>
-
-                <UserMinus size={22}/>
-
-                Non seguono
-
-              </button>
-
-
-
-              <button>
-
-                <Clock size={22}/>
-
-                Pending
-
-              </button>
-
-
-            </nav>
-
-
           </>
 
         )}
@@ -406,7 +453,8 @@ function App() {
 
       </div>
 
-    </div>
+
+    </main>
 
   );
 
