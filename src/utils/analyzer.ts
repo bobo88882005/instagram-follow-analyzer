@@ -135,10 +135,10 @@ const manualInactiveUsers = [
 
 
 
-function normalize(user: string) {
+function normalize(user:string) {
 
   return user
-    .replace("@", "")
+    .replace("@","")
     .trim()
     .toLowerCase();
 
@@ -148,7 +148,7 @@ function normalize(user: string) {
 
 
 
-function cleanUsers(users: string[] = []) {
+function cleanUsers(users:string[] = []) {
 
   const blacklist = [
 
@@ -170,30 +170,30 @@ function cleanUsers(users: string[] = []) {
 
       users
 
-        .map(normalize)
+      .map(normalize)
 
-        .filter(user => {
-
-
-          if (!user)
-            return false;
+      .filter(user => {
 
 
+        if (!user)
+          return false;
 
-          if (
-            blacklist.some(
-              item =>
-              user.includes(item)
-            )
+
+
+        if (
+          blacklist.some(
+            item =>
+            user.includes(item)
           )
-            return false;
+        )
+          return false;
 
 
 
-          return /^[a-z0-9._]{2,}$/.test(user);
+        return /^[a-z0-9._]{2,}$/.test(user);
 
 
-        })
+      })
 
     )
 
@@ -208,7 +208,7 @@ function cleanUsers(users: string[] = []) {
 
 
 function findPossibleInactive(
-  users: string[]
+  users:string[]
 ) {
 
 
@@ -252,7 +252,7 @@ function findPossibleInactive(
 
 
 export function analyzeInstagram(
-  data: InstagramData
+  data:InstagramData
 ) {
 
 
@@ -263,9 +263,21 @@ export function analyzeInstagram(
 
 
 
-  const following =
+  const followingAll =
     cleanUsers(
       data.following
+    );
+
+
+
+  // Rimuove dal conteggio following gli esclusi manualmente
+
+  const following =
+    followingAll.filter(
+
+      user =>
+      !manualInactiveUsers.includes(user)
+
     );
 
 
@@ -297,7 +309,7 @@ export function analyzeInstagram(
       new Set([
 
         ...findPossibleInactive(
-          allNotFollowingBack
+          followingAll
         )
 
       ])
@@ -345,6 +357,7 @@ export function analyzeInstagram(
 
     followingCount:
       following.length,
+
 
 
     notFollowingBack,
