@@ -1,53 +1,112 @@
-export function extractUsernames(
-  html: string
-): string[] {
+export function extractUsernames(html: string): string[] {
 
   const usernames = new Set<string>();
 
 
-  const parser =
-    new DOMParser();
+  const parser = new DOMParser();
 
-
-  const doc =
+  const document =
     parser.parseFromString(
       html,
       "text/html"
     );
 
 
+  // Metodo 1: legge i link Instagram presenti nell'HTML
   const links =
     Array.from(
-      doc.querySelectorAll("a")
+      document.querySelectorAll("a")
     );
 
 
   links.forEach((link) => {
 
+    const href =
+      link.getAttribute("href");
+
+
     const text =
       link.textContent
-      ?.trim();
+        ?.trim();
 
 
-    if (!text)
-      return;
+    let username = "";
+
+
+    if (href) {
+
+      const match =
+        href.match(
+          /instagram\.com\/([^\/?#]+)/i
+        );
+
+
+      if (match) {
+
+        username =
+          match[1];
+
+      }
+
+    }
+
+
+    if (!username && text) {
+
+      username =
+        text;
+
+    }
+
+
+    username =
+      username
+        .replace("@", "")
+        .trim()
+        .toLowerCase();
+
 
 
     if (
-      /^[a-zA-Z0-9._]+$/.test(text)
+      /^[a-z0-9._]+$/.test(username)
     ) {
 
-      usernames.add(
-        text.toLowerCase()
-      );
+      usernames.add(username);
 
     }
+
 
   });
 
 
-  return Array.from(
-    usernames
-  );
+
+  // Metodo 2: fallback per eventuali HTML diversi
+  const rawText =
+    document.body.innerText;
+
+
+  const possibleUsers =
+    rawText.match(
+      /@[a-zA-Z0-9._]+/g
+    );
+
+
+  if (possibleUsers) {
+
+    possibleUsers.forEach(user => {
+
+      usernames.add(
+        user
+          .replace("@","")
+          .toLowerCase()
+      );
+
+    });
+
+  }
+
+
+
+  return Array.from(usernames);
 
 }
