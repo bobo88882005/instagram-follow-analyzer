@@ -4,111 +4,72 @@
 
 
 body {
-
-  margin:0;
-
-  font-family:
-    Inter,
-    Arial,
-    sans-serif;
-
-  background:#050505;
-
-  color:white;
-
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  background: #050505;
+  color: white;
 }
-
 
 
 .app {
-
-  min-height:100vh;
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
-  padding:15px;
-
-  position:relative;
-
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  position: relative;
 }
-
-
-
 
 
 .background-gradient {
 
-  position:fixed;
-
-  inset:-200px;
+  position: fixed;
+  inset: -200px;
 
   background:
-
     radial-gradient(
       circle at top left,
       #fd1d1d,
       transparent 35%
     ),
-
     radial-gradient(
       circle at bottom right,
       #833ab4,
       transparent 35%
     ),
-
     radial-gradient(
       circle at center,
       #405de6,
       transparent 40%
     );
 
-
-  filter:blur(90px);
-
-  opacity:.45;
+  filter: blur(90px);
+  opacity: .45;
 
 }
 
 
 
 
-
-
-
 .card {
 
-  width:100%;
+  width: 100%;
+  max-width: 520px;
 
-  max-width:520px;
-
-  position:relative;
-
-  z-index:1;
-
+  position: relative;
+  z-index: 1;
 
   background:
-
     rgba(20,20,20,.85);
 
-
   backdrop-filter:
-
     blur(18px);
 
+  border-radius: 24px;
 
-
-  border-radius:24px;
-
-
-  padding:18px;
-
+  padding: 18px;
 
   box-shadow:
-
     0 20px 60px rgba(0,0,0,.5);
 
 }
@@ -118,18 +79,15 @@ body {
 
 
 
-
 .logo {
 
-  text-align:center;
+  text-align: center;
 
-  font-size:26px;
+  font-size: 26px;
 
-  font-weight:800;
-
+  font-weight: 800;
 
   background:
-
     linear-gradient(
       45deg,
       #feda75,
@@ -139,10 +97,9 @@ body {
       #4f5bd5
     );
 
+  -webkit-background-clip: text;
 
-  -webkit-background-clip:text;
-
-  color:transparent;
+  color: transparent;
 
 }
 
@@ -164,41 +121,26 @@ body {
 
 
 
-
-
 .upload-button {
-
 
   display:flex;
 
+  justify-content:center;
 
   align-items:center;
 
-
-  justify-content:center;
-
-
   gap:8px;
-
-
 
   padding:13px;
 
-
-
   border-radius:16px;
 
-
-
   background:
-
     linear-gradient(
       45deg,
       #fd1d1d,
       #833ab4
     );
-
-
 
   cursor:pointer;
 
@@ -232,20 +174,16 @@ h1 {
 
 
 
-.stats {
 
+.stats {
 
   display:grid;
 
-
   grid-template-columns:1fr 1fr;
-
 
   gap:8px;
 
-
   margin-bottom:12px;
-
 
 }
 
@@ -255,19 +193,12 @@ h1 {
 
 .stats div {
 
-
   background:
-
     rgba(255,255,255,.07);
-
-
 
   border-radius:14px;
 
-
-
   padding:12px;
-
 
 }
 
@@ -285,10 +216,11 @@ h1 {
 
 
 
+
+
 .stat-click:hover {
 
   background:
-
     rgba(255,255,255,.15);
 
 }
@@ -307,6 +239,8 @@ h1 {
 
 
 
+
+
 .stats strong {
 
   font-size:23px;
@@ -320,21 +254,15 @@ h1 {
 
 
 
-
 .counter-grid {
-
 
   display:grid;
 
-
   grid-template-columns:1fr 1fr;
-
 
   gap:8px;
 
-
   margin-bottom:12px;
-
 
 }
 
@@ -343,46 +271,29 @@ h1 {
 
 
 
-.counter {
 
+.counter {
 
   border:0;
 
-
   border-radius:14px;
-
 
   padding:10px;
 
-
   background:
-
     rgba(255,255,255,.07);
-
-
 
   color:white;
 
-
-
   cursor:pointer;
-
-
 
   display:flex;
 
-
-
   flex-direction:column;
-
-
 
   align-items:flex-start;
 
-
-
   gap:2px;
-
 
 }
 
@@ -392,23 +303,19 @@ h1 {
 
 .counter span {
 
-
   font-size:11px;
 
-
   opacity:.7;
-
 
 }
 
 
 
 
+
 .counter strong {
 
-
   font-size:18px;
-
 
 }
 
@@ -418,18 +325,15 @@ h1 {
 
 .counter.active {
 
-
   background:
-
-
     linear-gradient(
       135deg,
       rgba(214,41,118,.7),
       rgba(79,91,213,.7)
     );
 
-
 }
+
 
 
 
@@ -439,15 +343,11 @@ h1 {
 
 .user-list {
 
-
   max-height:330px;
-
 
   overflow-y:auto;
 
-
   margin-bottom:10px;
-
 
 }
 
@@ -455,47 +355,29 @@ h1 {
 
 
 
-.user-list a {
 
+.user-list a {
 
   display:flex;
 
-
   justify-content:space-between;
-
 
   align-items:center;
 
-
-
   padding:9px 12px;
-
-
 
   margin-bottom:5px;
 
-
-
   border-radius:12px;
 
-
-
   background:
-
     rgba(255,255,255,.06);
-
-
 
   color:white;
 
-
-
   text-decoration:none;
 
-
-
   font-size:14px;
-
 
 }
 
@@ -505,15 +387,27 @@ h1 {
 
 .user-list a:hover {
 
-
   background:
-
     rgba(255,255,255,.15);
-
 
 }
 
 
+
+
+
+
+.follow-date {
+
+  margin-left:auto;
+
+  margin-right:8px;
+
+  font-size:11px;
+
+  opacity:.5;
+
+}
 
 
 
@@ -521,20 +415,15 @@ h1 {
 
 .secondary-title {
 
-
   margin:
 
     15px 0 8px;
 
-
   font-size:12px;
-
 
   opacity:.6;
 
-
   text-transform:uppercase;
-
 
 }
 
@@ -542,41 +431,24 @@ h1 {
 
 
 
-
-
 .menu-card {
-
 
   display:flex;
 
-
   align-items:center;
-
 
   gap:10px;
 
-
-
   padding:11px;
-
-
 
   margin-bottom:8px;
 
-
-
   border-radius:14px;
 
-
-
   background:
-
     rgba(255,255,255,.07);
 
-
-
   cursor:pointer;
-
 
 }
 
@@ -586,9 +458,7 @@ h1 {
 
 .menu-card span {
 
-
   flex:1;
-
 
 }
 
@@ -596,25 +466,17 @@ h1 {
 
 
 
+
 .popup-section {
 
-
   background:
-
     rgba(255,255,255,.04);
-
-
 
   border-radius:15px;
 
-
-
   padding:8px;
 
-
-
   margin-bottom:8px;
-
 
 }
 
@@ -626,58 +488,32 @@ h1 {
 
 .reset {
 
-
   width:100%;
-
-
 
   padding:12px;
 
-
-
   margin-top:10px;
-
-
 
   border:0;
 
-
-
   border-radius:15px;
 
-
-
   background:
-
     rgba(255,255,255,.1);
-
-
 
   color:white;
 
-
-
   display:flex;
-
-
 
   justify-content:center;
 
-
-
   align-items:center;
-
-
 
   gap:8px;
 
-
-
   cursor:pointer;
 
-
 }
-
 
 
 
@@ -686,17 +522,15 @@ h1 {
 
 .empty {
 
-
   text-align:center;
-
 
   opacity:.6;
 
-
   padding:20px;
 
-
 }
+
+
 
 
 
@@ -712,7 +546,6 @@ h1 {
   }
 
 
-
   .card {
 
     padding:14px;
@@ -720,7 +553,6 @@ h1 {
     border-radius:20px;
 
   }
-
 
 
   .counter-grid {
