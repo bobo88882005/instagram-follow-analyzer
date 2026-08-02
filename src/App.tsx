@@ -7,352 +7,679 @@ import {
   UserX,
   RefreshCcw,
   ChevronRight,
-  Users,
-  Ghost
+  Ghost,
+  Users
 } from "lucide-react";
 
-
 import { readInstagramZip } from "./parser/zipParser";
-
 import { analyzeInstagram } from "./utils/analyzer";
-
 
 
 
 function App() {
 
 
-const [result,setResult]=useState<any>(null);
+  const [result,setResult] =
+    useState<any>(null);
 
-const [loading,setLoading]=useState(false);
 
-const [filter,setFilter]=useState("all");
+  const [loading,setLoading] =
+    useState(false);
 
-const [section,setSection]=useState<string|null>(null);
 
+  const [view,setView] =
+    useState<"normal"|"inactive">("normal");
 
 
+  const [section,setSection] =
+    useState<string|null>(null);
 
 
-async function handleUpload(
-e:React.ChangeEvent<HTMLInputElement>
-){
 
 
-const file=e.target.files?.[0];
 
-if(!file)return;
+  async function handleUpload(
+    e:React.ChangeEvent<HTMLInputElement>
+  ) {
 
 
-setLoading(true);
+    const file =
+      e.target.files?.[0];
 
 
-const data=
-await readInstagramZip(file);
+    if(!file)
+      return;
 
 
-const analysis=
-analyzeInstagram(data);
 
+    setLoading(true);
 
-setResult(analysis);
 
 
-setLoading(false);
+    try {
 
 
-}
+      const data =
+        await readInstagramZip(file);
 
 
 
+      const analysis =
+        analyzeInstagram(data);
 
 
-function profile(user:string){
 
-return `https://www.instagram.com/${encodeURIComponent(user)}`;
+      setResult(analysis);
 
-}
 
 
+    } catch(error) {
 
 
+      console.error(error);
 
-function usersToShow(){
 
+      alert(
+        "Errore durante l'analisi dello ZIP"
+      );
 
-if(filter==="inactive")
 
-return result.possibleInactive;
+    }
 
 
-if(filter==="missing")
 
-return result.notFollowingBack;
+    setLoading(false);
 
 
-return result.notFollowingBack;
+  }
 
 
-}
 
 
 
 
+  function instagramLink(
+    username:string
+  ) {
 
-function UserList(){
 
-const users=
-usersToShow();
+    return (
+      "https://www.instagram.com/" +
+      encodeURIComponent(username)
+    );
 
 
-if(!users.length)
+  }
 
-return <div className="empty">
-Nessun risultato
-</div>;
 
 
 
-return (
 
-<div className="user-list">
 
-{
-users.slice(0,200)
-.map((u:string)=>(
+  function UserList({
+    users
+  }:{
+    users:string[]
+  }) {
 
-<a
 
-key={u}
 
-href={profile(u)}
+    if(
+      !users ||
+      users.length===0
+    ) {
 
-target="_blank"
+      return (
 
-rel="noreferrer"
+        <div className="empty">
 
->
+          Nessun risultato
 
-@{u}
+        </div>
 
-<ChevronRight size={16}/>
+      );
 
-</a>
+    }
 
-))
 
-}
 
-</div>
 
-);
 
+    return (
 
-}
+      <div className="user-list">
 
+        {
+          users
+          .slice(0,250)
+          .map(
+            (user:string)=>(
 
+            <a
 
+              key={user}
 
+              href={
+                instagramLink(user)
+              }
 
-return (
+              target="_blank"
 
-<div className="app">
+              rel="noopener noreferrer"
 
-<div className="card">
+            >
 
+              <span>
+                @{user}
+              </span>
 
 
-{!result && (
+              <ChevronRight size={16}/>
 
-<label className="upload-button">
 
-<Upload/>
+            </a>
 
-{
-loading
-?
-"Analisi..."
-:
-"Carica ZIP Instagram"
-}
+          ))
 
+        }
 
-<input
+      </div>
 
-hidden
+    );
 
-type="file"
 
-accept=".zip"
+  }
 
-onChange={handleUpload}
 
-/>
 
 
-</label>
 
-)}
 
+  function reset() {
 
+    setResult(null);
 
+    setSection(null);
 
+  }
 
-{result && (
 
 
-<>
 
 
-<h1>
-Non ti seguono
-</h1>
 
 
+  return (
 
-<div className="stats">
 
-<div>
+    <main className="app">
 
-Followers
 
-<strong>
-{result.followersCount}
-</strong>
+      <div className="background-gradient"/>
 
-</div>
 
 
-<div>
 
-Following
+      <div className="card">
 
-<strong>
-{result.followingCount}
-</strong>
 
-</div>
 
 
-</div>
 
+      {!result && (
 
 
+        <>
 
-<div className="filters">
 
+        <div className="logo">
 
-<button
+          Instagram Analyzer
 
-onClick={()=>setFilter("all")}
+        </div>
 
->
 
-🔴 Non ricambiano
 
-</button>
+        <p className="subtitle">
 
+          Scopri chi non ricambia il follow
 
+        </p>
 
-<button
 
-onClick={()=>setFilter("inactive")}
 
->
 
-👻 Possibili inattivi
 
-</button>
+        <label className="upload-button">
 
 
-</div>
+          <Upload size={20}/>
 
 
+          {
+            loading
+            ?
+            "Analisi..."
+            :
+            "Carica ZIP Instagram"
+          }
 
 
-<UserList />
 
+          <input
 
+            hidden
 
+            type="file"
 
+            accept=".zip"
 
+            onChange={handleUpload}
 
-<div className="menu-card"
+          />
 
-onClick={()=>setSection("pending")}
 
->
 
-<Clock/>
+        </label>
 
-Pending Requests
 
-<ChevronRight/>
 
-</div>
+        </>
 
 
+      )}
 
-<div className="menu-card"
 
-onClick={()=>setSection("received")}
 
->
 
-<UserPlus/>
 
-Richieste ricevute
 
-<ChevronRight/>
 
-</div>
+      {result && (
 
 
 
+        <>
 
-<div className="menu-card"
 
-onClick={()=>setSection("unfollow")}
 
->
 
-<UserX/>
 
-Recently Unfollowed
+        <h1>
 
-<ChevronRight/>
+          <Users size={22}/>
 
-</div>
+          Non ti seguono
 
+        </h1>
 
 
-<button
 
-className="reset"
 
-onClick={()=>setResult(null)}
 
->
+        <div className="stats">
 
-<RefreshCcw/>
 
-Nuova analisi
+          <div>
 
-</button>
+            <small>
+              Followers
+            </small>
 
 
-</>
+            <strong>
+              {result.followersCount}
+            </strong>
 
 
-)}
+          </div>
 
 
-</div>
 
-</div>
+          <div>
 
 
-);
+            <small>
+              Following
+            </small>
+
+
+            <strong>
+              {result.followingCount}
+            </strong>
+
+
+          </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <div className="filters">
+
+
+          <button
+
+            className={
+              view==="normal"
+              ?
+              "active"
+              :
+              ""
+            }
+
+
+            onClick={()=>
+              setView("normal")
+            }
+
+
+          >
+
+            🔴 Non ricambiano
+
+          </button>
+
+
+
+
+
+          <button
+
+            className={
+              view==="inactive"
+              ?
+              "active"
+              :
+              ""
+            }
+
+
+            onClick={()=>
+              setView("inactive")
+            }
+
+
+          >
+
+
+            👻 Possibili inattivi
+
+
+          </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        {
+
+          view==="normal"
+
+          ?
+
+          <UserList
+
+            users={
+              result.notFollowingBack
+            }
+
+          />
+
+
+          :
+
+
+          <UserList
+
+            users={
+              result.possibleInactive
+            }
+
+          />
+
+        }
+
+
+
+
+
+
+
+        <div
+
+          className="menu-card"
+
+          onClick={()=>
+            setSection("pending")
+          }
+
+        >
+
+          <Clock/>
+
+          Pending Requests
+
+          <ChevronRight/>
+
+
+        </div>
+
+
+
+
+
+
+        <div
+
+          className="menu-card"
+
+          onClick={()=>
+            setSection("received")
+          }
+
+        >
+
+
+          <UserPlus/>
+
+
+          Richieste ricevute
+
+
+          <ChevronRight/>
+
+
+        </div>
+
+
+
+
+
+
+        <div
+
+          className="menu-card"
+
+          onClick={()=>
+            setSection("unfollow")
+          }
+
+        >
+
+
+          <UserX/>
+
+
+          Recently Unfollowed
+
+
+          <ChevronRight/>
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        {
+          section==="pending" &&
+
+
+          <section className="popup-section">
+
+            <h2>
+              Pending
+            </h2>
+
+
+            <UserList
+
+              users={
+                result.pendingRequests
+              }
+
+            />
+
+
+          </section>
+
+        }
+
+
+
+
+
+
+
+
+        {
+          section==="received" &&
+
+
+          <section className="popup-section">
+
+
+            <h2>
+              Ricevute
+            </h2>
+
+
+
+            <UserList
+
+              users={
+                result.receivedRequests
+              }
+
+            />
+
+
+          </section>
+
+        }
+
+
+
+
+
+
+
+
+        {
+          section==="unfollow" &&
+
+
+          <section className="popup-section">
+
+
+            <h2>
+              Unfollow recenti
+            </h2>
+
+
+
+            <UserList
+
+              users={
+                result.recentlyUnfollowed
+              }
+
+
+            />
+
+
+
+          </section>
+
+        }
+
+
+
+
+
+
+
+
+
+        <button
+
+          className="reset"
+
+          onClick={reset}
+
+        >
+
+
+          <RefreshCcw size={18}/>
+
+
+          Nuova analisi
+
+
+
+        </button>
+
+
+
+
+
+
+        </>
+
+
+      )}
+
+
+
+
+
+
+      </div>
+
+
+    </main>
+
+
+  );
 
 
 }
