@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Upload } from "lucide-react";
+import {
+  Upload,
+  Home,
+  UserMinus,
+  Clock
+} from "lucide-react";
 
 import { readInstagramZip } from "./parser/zipParser";
 import { analyzeInstagram } from "./utils/analyzer";
@@ -7,14 +12,11 @@ import { analyzeInstagram } from "./utils/analyzer";
 
 function App() {
 
-
   const [result, setResult] =
     useState<any>(null);
 
-
   const [loading, setLoading] =
     useState(false);
-
 
 
   async function handleUpload(
@@ -42,16 +44,16 @@ function App() {
         analyzeInstagram(data);
 
 
-      setResult(
-        analysis
-      );
+      setResult(analysis);
 
 
-    } catch(error) {
+    } catch (error) {
 
       alert(
-        "Errore nella lettura dello ZIP Instagram"
+        "Errore durante la lettura dello ZIP Instagram"
       );
+
+      console.error(error);
 
     }
 
@@ -66,7 +68,6 @@ function App() {
 
     <div className="app">
 
-
       <div className="card">
 
 
@@ -79,40 +80,37 @@ function App() {
 
           <>
 
-          <p>
-            Importa il tuo archivio Instagram
-            per scoprire chi non ti segue.
-          </p>
+            <p>
+              Analizza chi non ti segue più
+              usando il tuo archivio Instagram.
+            </p>
 
 
-          <label className="upload-button">
+            <label className="upload-button">
+
+              <Upload size={22}/>
 
 
-            <Upload size={22}/>
-
-
-            {loading
-              ? "Analisi..."
-              : "Importa ZIP Instagram"
-            }
-
-
-            <input
-
-              type="file"
-
-              accept=".zip"
-
-              hidden
-
-              onChange={
-                handleUpload
+              {loading
+                ? "Analisi in corso..."
+                : "Importa ZIP Instagram"
               }
 
-            />
+
+              <input
+
+                type="file"
+
+                accept=".zip"
+
+                hidden
+
+                onChange={handleUpload}
+
+              />
 
 
-          </label>
+            </label>
 
           </>
 
@@ -122,140 +120,197 @@ function App() {
 
         {result && (
 
-          <div>
+          <>
 
 
-<h2>
-  Dashboard
-</h2>
+            <h2>
+              Dashboard
+            </h2>
 
 
-<div className="stats">
+            <div className="stats">
 
 
-  <div className="stat-card">
-    <span>
-      Followers
-    </span>
+              <div className="stat-card">
 
-    <strong>
-      {result.followersCount}
-    </strong>
-  </div>
+                <span>
+                  Followers
+                </span>
 
+                <strong>
+                  {result.followersCount}
+                </strong>
 
-
-  <div className="stat-card">
-    <span>
-      Following
-    </span>
-
-    <strong>
-      {result.followingCount}
-    </strong>
-  </div>
+              </div>
 
 
 
-  <div className="stat-card warning">
-    <span>
-      Non ti seguono
-    </span>
+              <div className="stat-card">
 
-    <strong>
-      {result.notFollowingBack.length}
-    </strong>
-  </div>
+                <span>
+                  Following
+                </span>
 
+                <strong>
+                  {result.followingCount}
+                </strong>
 
-
-  <div className="stat-card">
-    <span>
-      Pending
-    </span>
-
-    <strong>
-      {result.pendingRequests.length}
-    </strong>
-  </div>
-
-
-</div>
+              </div>
 
 
 
-            <h3>
-              Non ti seguono:
-            </h3>
+              <div className="stat-card warning">
+
+                <span>
+                  Non ti seguono
+                </span>
+
+                <strong>
+                  {result.notFollowingBack.length}
+                </strong>
+
+              </div>
 
 
-            {
 
-            result.notFollowingBack
-            .map(
-              (user:string)=>(
+              <div className="stat-card">
 
-                <a
+                <span>
+                  Pending
+                </span>
 
-                  key={user}
+                <strong>
+                  {result.pendingRequests.length}
+                </strong>
 
-                  href={
-                    `https://www.instagram.com/${user}/`
-                  }
+              </div>
 
-                  target="_blank"
 
-                >
+            </div>
 
-                  @{user}
-
-                </a>
-
-              )
-
-            )
-
-            }
 
 
             <h3>
-              Pending Requests:
+              👤 Persone che non ti seguono
             </h3>
 
 
-            {
-              result.pendingRequests
-              .map(
-                (user:string)=>(
+            <div>
 
-                  <a
+              {
+                result.notFollowingBack.map(
+                  (user:string)=>(
 
-                    key={user}
+                    <a
 
-                    href={
-                      `https://www.instagram.com/${user}/`
-                    }
+                      key={user}
 
-                    target="_blank"
+                      href={
+                        `https://www.instagram.com/${user}/`
+                      }
 
-                  >
+                      target="_blank"
 
-                    @{user}
+                      rel="noreferrer"
 
-                  </a>
+                    >
 
+                      @{user}
+
+                    </a>
+
+                  )
                 )
-              )
-            }
+              }
+
+            </div>
 
 
-          </div>
+
+            <h3>
+              ⏳ Pending Requests
+            </h3>
+
+
+            <div>
+
+              {
+                result.pendingRequests.map(
+                  (user:string)=>(
+
+                    <a
+
+                      key={user}
+
+                      href={
+                        `https://www.instagram.com/${user}/`
+                      }
+
+                      target="_blank"
+
+                      rel="noreferrer"
+
+                    >
+
+                      @{user}
+
+                    </a>
+
+                  )
+                )
+              }
+
+            </div>
+
+
+
+            <nav className="bottom-nav">
+
+
+              <button>
+
+                <Home size={22}/>
+
+                <span>
+                  Home
+                </span>
+
+              </button>
+
+
+
+              <button>
+
+                <UserMinus size={22}/>
+
+                <span>
+                  Non seguono
+                </span>
+
+              </button>
+
+
+
+              <button>
+
+                <Clock size={22}/>
+
+                <span>
+                  Pending
+                </span>
+
+              </button>
+
+
+            </nav>
+
+
+          </>
 
         )}
 
 
       </div>
-
 
     </div>
 
