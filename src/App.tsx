@@ -7,8 +7,8 @@ import {
   UserX,
   RefreshCcw,
   ChevronRight,
-  Ghost,
-  Users
+  Users,
+  Ghost
 } from "lucide-react";
 
 import { readInstagramZip } from "./parser/zipParser";
@@ -19,27 +19,27 @@ import { analyzeInstagram } from "./utils/analyzer";
 function App() {
 
 
-  const [result,setResult] =
+  const [result, setResult] =
     useState<any>(null);
 
 
-  const [loading,setLoading] =
+  const [loading, setLoading] =
     useState(false);
 
 
-  const [view,setView] =
-    useState<"normal"|"inactive">("normal");
+  const [view, setView] =
+    useState<"normal" | "inactive">("normal");
 
 
-  const [section,setSection] =
-    useState<string|null>(null);
+  const [section, setSection] =
+    useState<string | null>(null);
 
 
 
 
 
   async function handleUpload(
-    e:React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>
   ) {
 
 
@@ -47,7 +47,7 @@ function App() {
       e.target.files?.[0];
 
 
-    if(!file)
+    if (!file)
       return;
 
 
@@ -80,7 +80,7 @@ function App() {
 
 
       alert(
-        "Errore durante l'analisi dello ZIP"
+        "Errore durante l'analisi"
       );
 
 
@@ -97,20 +97,16 @@ function App() {
 
 
 
-
-  function instagramLink(
-    username:string
-  ) {
+  function profileLink(user:string) {
 
 
     return (
       "https://www.instagram.com/" +
-      encodeURIComponent(username)
+      encodeURIComponent(user)
     );
 
 
   }
-
 
 
 
@@ -123,10 +119,9 @@ function App() {
   }) {
 
 
-
     if(
       !users ||
-      users.length===0
+      users.length === 0
     ) {
 
       return (
@@ -140,7 +135,6 @@ function App() {
       );
 
     }
-
 
 
 
@@ -160,7 +154,7 @@ function App() {
               key={user}
 
               href={
-                instagramLink(user)
+                profileLink(user)
               }
 
               target="_blank"
@@ -169,13 +163,9 @@ function App() {
 
             >
 
-              <span>
-                @{user}
-              </span>
-
+              @{user}
 
               <ChevronRight size={16}/>
-
 
             </a>
 
@@ -187,19 +177,65 @@ function App() {
 
     );
 
-
   }
 
 
 
 
 
+  function SecondaryCard({
+    icon,
+    title,
+    count,
+    name
+  }:{
+    icon:any;
+    title:string;
+    count:number;
+    name:string;
+  }) {
 
-  function reset() {
 
-    setResult(null);
+    return (
 
-    setSection(null);
+      <div
+
+        className="menu-card"
+
+        onClick={() =>
+          setSection(
+            section === name
+            ? null
+            : name
+          )
+        }
+
+      >
+
+        {icon}
+
+
+        <span>
+
+          {title}
+
+          <small>
+
+            {count}
+
+          </small>
+
+
+        </span>
+
+
+
+        <ChevronRight/>
+
+
+      </div>
+
+    );
 
   }
 
@@ -211,7 +247,6 @@ function App() {
 
   return (
 
-
     <main className="app">
 
 
@@ -219,15 +254,11 @@ function App() {
 
 
 
-
       <div className="card">
 
 
 
-
-
       {!result && (
-
 
         <>
 
@@ -239,19 +270,15 @@ function App() {
         </div>
 
 
-
         <p className="subtitle">
 
-          Scopri chi non ricambia il follow
+          Analizza followers e following
 
         </p>
 
 
 
-
-
         <label className="upload-button">
-
 
           <Upload size={20}/>
 
@@ -279,13 +306,10 @@ function App() {
           />
 
 
-
         </label>
 
 
-
         </>
-
 
       )}
 
@@ -295,13 +319,10 @@ function App() {
 
 
 
+
       {result && (
 
-
-
         <>
-
-
 
 
 
@@ -309,7 +330,7 @@ function App() {
 
           <Users size={22}/>
 
-          Non ti seguono
+          Dashboard
 
         </h1>
 
@@ -338,7 +359,6 @@ function App() {
 
           <div>
 
-
             <small>
               Following
             </small>
@@ -352,7 +372,6 @@ function App() {
           </div>
 
 
-
         </div>
 
 
@@ -362,7 +381,7 @@ function App() {
 
 
 
-        <div className="filters">
+        <div className="counter-grid">
 
 
           <button
@@ -370,22 +389,38 @@ function App() {
             className={
               view==="normal"
               ?
-              "active"
+              "counter active"
               :
-              ""
+              "counter"
             }
 
 
-            onClick={()=>
+            onClick={() =>
               setView("normal")
             }
 
-
           >
 
-            🔴 Non ricambiano
+            🔴
+
+            <span>
+
+              Non ricambiano
+
+            </span>
+
+
+            <strong>
+
+              {
+                result.notFollowingBack.length
+              }
+
+            </strong>
+
 
           </button>
+
 
 
 
@@ -396,21 +431,34 @@ function App() {
             className={
               view==="inactive"
               ?
-              "active"
+              "counter active"
               :
-              ""
+              "counter"
             }
 
 
-            onClick={()=>
+            onClick={() =>
               setView("inactive")
             }
 
-
           >
 
+            👻
 
-            👻 Possibili inattivi
+            <span>
+
+              Possibili inattivi
+
+            </span>
+
+
+            <strong>
+
+              {
+                result.possibleInactive.length
+              }
+
+            </strong>
 
 
           </button>
@@ -426,7 +474,6 @@ function App() {
 
 
         {
-
           view==="normal"
 
           ?
@@ -441,7 +488,6 @@ function App() {
 
 
           :
-
 
           <UserList
 
@@ -459,76 +505,11 @@ function App() {
 
 
 
-        <div
-
-          className="menu-card"
-
-          onClick={()=>
-            setSection("pending")
-          }
-
-        >
-
-          <Clock/>
-
-          Pending Requests
-
-          <ChevronRight/>
 
 
-        </div>
+        <div className="secondary-title">
 
-
-
-
-
-
-        <div
-
-          className="menu-card"
-
-          onClick={()=>
-            setSection("received")
-          }
-
-        >
-
-
-          <UserPlus/>
-
-
-          Richieste ricevute
-
-
-          <ChevronRight/>
-
-
-        </div>
-
-
-
-
-
-
-        <div
-
-          className="menu-card"
-
-          onClick={()=>
-            setSection("unfollow")
-          }
-
-        >
-
-
-          <UserX/>
-
-
-          Recently Unfollowed
-
-
-          <ChevronRight/>
-
+          Altre sezioni
 
         </div>
 
@@ -538,30 +519,38 @@ function App() {
 
 
 
+        <SecondaryCard
+
+          icon={<Clock/>}
+
+          title="Pending Requests"
+
+          count={
+            result.pendingRequests.length
+          }
+
+          name="pending"
+
+        />
+
 
 
         {
-          section==="pending" &&
+          section==="pending" && (
 
+            <div className="popup-section">
 
-          <section className="popup-section">
+              <UserList
 
-            <h2>
-              Pending
-            </h2>
+                users={
+                  result.pendingRequests
+                }
 
+              />
 
-            <UserList
+            </div>
 
-              users={
-                result.pendingRequests
-              }
-
-            />
-
-
-          </section>
-
+          )
         }
 
 
@@ -571,30 +560,38 @@ function App() {
 
 
 
+        <SecondaryCard
+
+          icon={<UserPlus/>}
+
+          title="Richieste ricevute"
+
+          count={
+            result.receivedRequests.length
+          }
+
+          name="received"
+
+        />
+
+
+
         {
-          section==="received" &&
+          section==="received" && (
 
+            <div className="popup-section">
 
-          <section className="popup-section">
+              <UserList
 
+                users={
+                  result.receivedRequests
+                }
 
-            <h2>
-              Ricevute
-            </h2>
+              />
 
+            </div>
 
-
-            <UserList
-
-              users={
-                result.receivedRequests
-              }
-
-            />
-
-
-          </section>
-
+          )
         }
 
 
@@ -604,35 +601,39 @@ function App() {
 
 
 
+        <SecondaryCard
+
+          icon={<UserX/>}
+
+          title="Recently Unfollowed"
+
+          count={
+            result.recentlyUnfollowed.length
+          }
+
+          name="unfollow"
+
+        />
+
+
+
         {
-          section==="unfollow" &&
+          section==="unfollow" && (
 
+            <div className="popup-section">
 
-          <section className="popup-section">
+              <UserList
 
+                users={
+                  result.recentlyUnfollowed
+                }
 
-            <h2>
-              Unfollow recenti
-            </h2>
+              />
 
+            </div>
 
-
-            <UserList
-
-              users={
-                result.recentlyUnfollowed
-              }
-
-
-            />
-
-
-
-          </section>
-
+          )
         }
-
-
 
 
 
@@ -644,16 +645,16 @@ function App() {
 
           className="reset"
 
-          onClick={reset}
+          onClick={() =>
+            setResult(null)
+          }
 
         >
-
 
           <RefreshCcw size={18}/>
 
 
           Nuova analisi
-
 
 
         </button>
@@ -665,9 +666,7 @@ function App() {
 
         </>
 
-
       )}
-
 
 
 
