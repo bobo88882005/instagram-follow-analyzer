@@ -26,10 +26,6 @@ function App() {
     useState(false);
 
 
-  const [view, setView] =
-    useState<"normal" | "pending">("normal");
-
-
   const [section, setSection] =
     useState<string | null>(null);
 
@@ -304,12 +300,18 @@ function App() {
 
 
 
-        <div className="stats">
+        <div className="top-grid">
 
 
           <div
 
-            className="stat-click"
+            className={
+              section==="followers"
+              ?
+              "top-card active"
+              :
+              "top-card"
+            }
 
             onClick={() =>
               toggleSection("followers")
@@ -317,12 +319,11 @@ function App() {
 
           >
 
-            <small>
+            👥
 
+            <span>
               Followers
-
-            </small>
-
+            </span>
 
             <strong>
 
@@ -330,16 +331,20 @@ function App() {
 
             </strong>
 
-
           </div>
-
 
 
 
 
           <div
 
-            className="stat-click"
+            className={
+              section==="following"
+              ?
+              "top-card active"
+              :
+              "top-card"
+            }
 
             onClick={() =>
               toggleSection("following")
@@ -347,12 +352,11 @@ function App() {
 
           >
 
-            <small>
+            ➕
 
+            <span>
               Following
-
-            </small>
-
+            </span>
 
             <strong>
 
@@ -360,16 +364,80 @@ function App() {
 
             </strong>
 
+          </div>
+
+
+
+
+          <div
+
+            className={
+              section==="notback"
+              ?
+              "top-card active"
+              :
+              "top-card"
+            }
+
+            onClick={() =>
+              toggleSection("notback")
+            }
+
+          >
+
+            🔴
+
+            <span>
+              Non ricambiano
+            </span>
+
+            <strong>
+
+              {
+                result.notFollowingBack.length
+              }
+
+            </strong>
 
           </div>
 
 
 
+
+          <div
+
+            className={
+              section==="pending"
+              ?
+              "top-card active"
+              :
+              "top-card"
+            }
+
+            onClick={() =>
+              toggleSection("pending")
+            }
+
+          >
+
+            🕓
+
+            <span>
+              Pending Requests
+            </span>
+
+            <strong>
+
+              {
+                result.pendingRequests?.length ?? 0
+              }
+
+            </strong>
+
+          </div>
+
+
         </div>
-
-
-
-
 
 
 
@@ -399,8 +467,6 @@ function App() {
 
 
 
-
-
         {
           section==="following" && (
 
@@ -426,128 +492,51 @@ function App() {
 
 
 
+        {
+          section==="notback" && (
 
+            <div className="popup-section">
 
+              <h3>
+                Non ricambiano
+              </h3>
 
+              <UserList
 
+                users={
+                  result.notFollowingBack
+                }
 
-        <div className="counter-grid">
+              />
 
+            </div>
 
-
-          <button
-
-            className={
-              view==="normal"
-              ?
-              "counter active"
-              :
-              "counter"
-            }
-
-
-            onClick={() =>
-              setView("normal")
-            }
-
-
-          >
-
-            🔴
-
-            <span>
-              Non ricambiano
-            </span>
-
-
-            <strong>
-
-              {
-                result.notFollowingBack.length
-              }
-
-            </strong>
-
-
-          </button>
-
-
-
-
-
-
-
-          <button
-
-            className={
-              view==="pending"
-              ?
-              "counter active"
-              :
-              "counter"
-            }
-
-
-            onClick={() =>
-              setView("pending")
-            }
-
-
-          >
-
-            🕓
-
-            <span>
-              Pending Requests
-            </span>
-
-
-            <strong>
-
-              {
-                result.pendingRequests?.length ?? 0
-              }
-
-            </strong>
-
-
-          </button>
-
-
-
-
-        </div>
-
-
-
+          )
+        }
 
 
 
 
         {
-          view==="normal"
+          section==="pending" && (
 
-          ?
+            <div className="popup-section">
 
-          <UserList
+              <h3>
+                Pending Requests
+              </h3>
 
-            users={
-              result.notFollowingBack
-            }
+              <UserList
 
-          />
+                users={
+                  result.pendingRequests
+                }
 
+              />
 
-          :
+            </div>
 
-          <UserList
-
-            users={
-              result.pendingRequests
-            }
-
-          />
-
+          )
         }
 
 
