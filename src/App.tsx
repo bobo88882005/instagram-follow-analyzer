@@ -591,6 +591,15 @@ function App() {
           </span>
 
 
+          <strong className="badge">
+
+            {
+              result.pendingRequests?.length ?? 0
+            }
+
+          </strong>
+
+
           <ChevronRight/>
 
 
@@ -646,6 +655,15 @@ function App() {
           </span>
 
 
+          <strong className="badge">
+
+            {
+              result.receivedRequests?.length ?? 0
+            }
+
+          </strong>
+
+
           <ChevronRight/>
 
 
@@ -699,6 +717,15 @@ function App() {
             Recently Unfollowed
 
           </span>
+
+
+          <strong className="badge">
+
+            {
+              result.recentlyUnfollowed?.length ?? 0
+            }
+
+          </strong>
 
 
           <ChevronRight/>
