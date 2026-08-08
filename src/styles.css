@@ -550,6 +550,12 @@ h1 {
 
   padding:4px;
 
+  min-width:0;
+
+  width:100%;
+
+  overflow:hidden;
+
 
   background:
 
