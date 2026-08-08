@@ -445,108 +445,6 @@ function App() {
 
 
 
-        {
-          section==="followers" && (
-
-            <div className="popup-section">
-
-              <UserList
-
-                users={
-                  result.followers
-                }
-
-              />
-
-            </div>
-
-          )
-        }
-
-
-
-
-        {
-          section==="following" && (
-
-            <div className="popup-section">
-
-              <UserList
-
-                users={
-                  result.following
-                }
-
-              />
-
-            </div>
-
-          )
-        }
-
-
-
-
-        {
-          section==="notback" && (
-
-            <div className="popup-section">
-
-              <UserList
-
-                users={
-                  result.notFollowingBack
-                }
-
-              />
-
-            </div>
-
-          )
-        }
-
-
-
-
-        {
-          section==="pending" && (
-
-            <div className="popup-section">
-
-              <UserList
-
-                users={
-                  result.pendingRequests
-                }
-
-              />
-
-            </div>
-
-          )
-        }
-
-
-
-
-
-
-
-
-
-        <div className="secondary-title">
-
-          Altre sezioni
-
-        </div>
-
-
-
-
-
-
-
-
         <div className="extra-grid">
 
 
@@ -654,6 +552,90 @@ function App() {
 
 
         </div>
+
+
+
+
+        {
+          section==="followers" && (
+
+            <div className="popup-section">
+
+              <UserList
+
+                users={
+                  result.followers
+                }
+
+              />
+
+            </div>
+
+          )
+        }
+
+
+
+
+        {
+          section==="following" && (
+
+            <div className="popup-section">
+
+              <UserList
+
+                users={
+                  result.following
+                }
+
+              />
+
+            </div>
+
+          )
+        }
+
+
+
+
+        {
+          section==="notback" && (
+
+            <div className="popup-section">
+
+              <UserList
+
+                users={
+                  result.notFollowingBack
+                }
+
+              />
+
+            </div>
+
+          )
+        }
+
+
+
+
+        {
+          section==="pending" && (
+
+            <div className="popup-section">
+
+              <UserList
+
+                users={
+                  result.pendingRequests
+                }
+
+              />
+
+            </div>
+
+          )
+        }
 
 
 
