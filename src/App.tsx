@@ -2,12 +2,15 @@ import { useState } from "react";
 
 import {
   Upload,
-  Ghost,
+  Users,
   UserPlus,
-  UserX,
+  HeartCrack,
+  Clock,
+  Ghost,
+  Inbox,
+  Undo2,
   RefreshCcw,
-  ChevronRight,
-  Users
+  ChevronRight
 } from "lucide-react";
 
 import { readInstagramZip } from "./parser/zipParser";
@@ -319,7 +322,7 @@ function App() {
 
           >
 
-            <span className="icon">👥</span>
+            <Users size={16}/>
 
             <span>
               Followers
@@ -352,7 +355,7 @@ function App() {
 
           >
 
-            <span className="icon">➕</span>
+            <UserPlus size={16}/>
 
             <span>
               Following
@@ -385,7 +388,7 @@ function App() {
 
           >
 
-            <span className="icon">🔴</span>
+            <HeartCrack size={16}/>
 
             <span>
               Non ricambiano
@@ -420,7 +423,7 @@ function App() {
 
           >
 
-            <span className="icon">🕓</span>
+            <Clock size={16}/>
 
             <span>
               Pending Requests
@@ -447,10 +450,6 @@ function App() {
 
             <div className="popup-section">
 
-              <h3>
-                Followers
-              </h3>
-
               <UserList
 
                 users={
@@ -471,10 +470,6 @@ function App() {
           section==="following" && (
 
             <div className="popup-section">
-
-              <h3>
-                Following
-              </h3>
 
               <UserList
 
@@ -497,10 +492,6 @@ function App() {
 
             <div className="popup-section">
 
-              <h3>
-                Non ricambiano
-              </h3>
-
               <UserList
 
                 users={
@@ -521,10 +512,6 @@ function App() {
           section==="pending" && (
 
             <div className="popup-section">
-
-              <h3>
-                Pending Requests
-              </h3>
 
               <UserList
 
@@ -560,40 +547,113 @@ function App() {
 
 
 
-        <div
-
-          className="menu-card"
-
-          onClick={() =>
-            toggleSection("inactive")
-          }
-
-        >
-
-          <Ghost size={17}/>
+        <div className="extra-grid">
 
 
-          <span>
+          <div
 
-            Possibili inattivi
-
-          </span>
-
-
-          <strong className="badge">
-
-            {
-              result.possibleInactive.length
+            className={
+              section==="inactive"
+              ?
+              "extra-card active"
+              :
+              "extra-card"
             }
 
-          </strong>
+            onClick={() =>
+              toggleSection("inactive")
+            }
+
+          >
+
+            <Ghost size={15}/>
+
+            <span>
+              Inattivi
+            </span>
+
+            <strong>
+
+              {
+                result.possibleInactive.length
+              }
+
+            </strong>
+
+          </div>
 
 
-          <ChevronRight size={15}/>
+
+
+          <div
+
+            className={
+              section==="received"
+              ?
+              "extra-card active"
+              :
+              "extra-card"
+            }
+
+            onClick={() =>
+              toggleSection("received")
+            }
+
+          >
+
+            <Inbox size={15}/>
+
+            <span>
+              Ricevute
+            </span>
+
+            <strong>
+
+              {
+                result.receivedRequests?.length ?? 0
+              }
+
+            </strong>
+
+          </div>
+
+
+
+
+          <div
+
+            className={
+              section==="unfollow"
+              ?
+              "extra-card active"
+              :
+              "extra-card"
+            }
+
+            onClick={() =>
+              toggleSection("unfollow")
+            }
+
+          >
+
+            <Undo2 size={15}/>
+
+            <span>
+              Unfollowed
+            </span>
+
+            <strong>
+
+              {
+                result.recentlyUnfollowed?.length ?? 0
+              }
+
+            </strong>
+
+          </div>
 
 
         </div>
-
 
 
 
@@ -619,49 +679,6 @@ function App() {
 
 
 
-
-
-
-
-
-        <div
-
-          className="menu-card"
-
-          onClick={() =>
-            toggleSection("received")
-          }
-
-        >
-
-          <UserPlus size={17}/>
-
-
-          <span>
-
-            Richieste ricevute
-
-          </span>
-
-
-          <strong className="badge">
-
-            {
-              result.receivedRequests?.length ?? 0
-            }
-
-          </strong>
-
-
-          <ChevronRight size={15}/>
-
-
-        </div>
-
-
-
-
-
         {
           section==="received" && (
 
@@ -679,49 +696,6 @@ function App() {
 
           )
         }
-
-
-
-
-
-
-
-
-
-        <div
-
-          className="menu-card"
-
-          onClick={() =>
-            toggleSection("unfollow")
-          }
-
-        >
-
-          <UserX size={17}/>
-
-
-          <span>
-
-            Recently Unfollowed
-
-          </span>
-
-
-          <strong className="badge">
-
-            {
-              result.recentlyUnfollowed?.length ?? 0
-            }
-
-          </strong>
-
-
-          <ChevronRight size={15}/>
-
-
-        </div>
-
 
 
 
