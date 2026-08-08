@@ -225,6 +225,12 @@ function findPossibleInactive(
   return users.filter(user => {
 
 
+    // Blacklist manuale e pattern algoritmico si comportano
+    // allo stesso modo: qui vengono solo "candidati" come
+    // possibili inattivi. Il whitelist (in base alla presenza
+    // tra i followers) viene applicato dopo, in modo uniforme
+    // per entrambi i tipi di rilevamento.
+
     if (
       manualInactiveUsers.includes(user)
     )
@@ -280,15 +286,12 @@ export function analyzeInstagram(
 
 
 
-  // Rimuove dal conteggio following gli esclusi manualmente
-
+  // Blacklist manuale e pattern algoritmico si comportano allo
+  // stesso modo: nessuno dei due esclude automaticamente qualcuno
+  // dal conteggio "following". Il whitelist (in base alla presenza
+  // tra i followers) viene applicato più sotto, in modo uniforme.
   const following =
-    followingAll.filter(
-
-      user =>
-      !manualInactiveUsers.includes(user)
-
-    );
+    followingAll;
 
 
 
