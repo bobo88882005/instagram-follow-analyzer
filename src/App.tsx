@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import {
   Upload,
-  Clock,
+  Ghost,
   UserPlus,
   UserX,
   RefreshCcw,
@@ -27,7 +27,7 @@ function App() {
 
 
   const [view, setView] =
-    useState<"normal" | "inactive">("normal");
+    useState<"normal" | "pending">("normal");
 
 
   const [section, setSection] =
@@ -480,7 +480,7 @@ function App() {
           <button
 
             className={
-              view==="inactive"
+              view==="pending"
               ?
               "counter active"
               :
@@ -489,23 +489,23 @@ function App() {
 
 
             onClick={() =>
-              setView("inactive")
+              setView("pending")
             }
 
 
           >
 
-            👻
+            🕓
 
             <span>
-              Possibili inattivi
+              Pending Requests
             </span>
 
 
             <strong>
 
               {
-                result.possibleInactive.length
+                result.pendingRequests?.length ?? 0
               }
 
             </strong>
@@ -543,7 +543,7 @@ function App() {
           <UserList
 
             users={
-              result.possibleInactive
+              result.pendingRequests
             }
 
           />
@@ -576,17 +576,17 @@ function App() {
           className="menu-card"
 
           onClick={() =>
-            toggleSection("pending")
+            toggleSection("inactive")
           }
 
         >
 
-          <Clock/>
+          <Ghost/>
 
 
           <span>
 
-            Pending Requests
+            Possibili inattivi
 
           </span>
 
@@ -594,7 +594,7 @@ function App() {
           <strong className="badge">
 
             {
-              result.pendingRequests?.length ?? 0
+              result.possibleInactive.length
             }
 
           </strong>
@@ -610,14 +610,14 @@ function App() {
 
 
         {
-          section==="pending" && (
+          section==="inactive" && (
 
             <div className="popup-section">
 
               <UserList
 
                 users={
-                  result.pendingRequests
+                  result.possibleInactive
                 }
 
               />
