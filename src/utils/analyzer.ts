@@ -286,15 +286,6 @@ export function analyzeInstagram(
 
 
 
-  // Blacklist manuale e pattern algoritmico si comportano allo
-  // stesso modo: nessuno dei due esclude automaticamente qualcuno
-  // dal conteggio "following". Il whitelist (in base alla presenza
-  // tra i followers) viene applicato più sotto, in modo uniforme.
-  const following =
-    followingAll;
-
-
-
   const followersSet =
     new Set(
       followers
@@ -302,19 +293,8 @@ export function analyzeInstagram(
 
 
 
-  const allNotFollowingBack =
-
-    following.filter(
-
-      user =>
-      !followersSet.has(user)
-
-    );
-
-
-
-
-
+  // Blacklist manuale e pattern algoritmico si comportano allo
+  // stesso modo: entrambi producono solo dei CANDIDATI inattivi.
   const possibleInactiveRaw =
 
     Array.from(
@@ -331,9 +311,9 @@ export function analyzeInstagram(
 
 
 
-  // Se un utente marcato come "possibile inattivo" ti segue
-  // davvero (e' tra i followers), non e' un account fake/abbandonato:
-  // va trattato come un follower normale, non come inattivo.
+  // Whitelist: chi tra i candidati ti segue davvero (è tra i
+  // followers) non è un account fake/abbandonato, va trattato
+  // come un following normale.
   const possibleInactive =
 
     possibleInactiveRaw.filter(
@@ -345,7 +325,6 @@ export function analyzeInstagram(
 
 
 
-
   const inactiveSet =
     new Set(
       possibleInactive
@@ -353,14 +332,26 @@ export function analyzeInstagram(
 
 
 
+  // "Following" conta solo chi NON è stato classificato come
+  // possibile inattivo: i possibili inattivi non rientrano in
+  // nessun conteggio (né Following né Non ricambiano).
+  const following =
+
+    followingAll.filter(
+
+      user =>
+      !inactiveSet.has(user)
+
+    );
+
 
 
   const notFollowingBack =
 
-    allNotFollowingBack.filter(
+    following.filter(
 
       user =>
-      !inactiveSet.has(user)
+      !followersSet.has(user)
 
     );
 
