@@ -312,7 +312,7 @@ export function analyzeInstagram(
 
 
 
-  const possibleInactive =
+  const possibleInactiveRaw =
 
     Array.from(
 
@@ -326,6 +326,19 @@ export function analyzeInstagram(
 
     );
 
+
+
+  // Se un utente marcato come "possibile inattivo" ti segue
+  // davvero (e' tra i followers), non e' un account fake/abbandonato:
+  // va trattato come un follower normale, non come inattivo.
+  const possibleInactive =
+
+    possibleInactiveRaw.filter(
+
+      user =>
+      !followersSet.has(user)
+
+    );
 
 
 
