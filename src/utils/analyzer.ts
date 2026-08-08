@@ -10,7 +10,6 @@ type InstagramData = {
 
 const manualInactiveUsers = [
 
-  "_u",
   "seguiti",
   "andrea.old",
   "siro.valmont",
@@ -131,6 +130,14 @@ const manualInactiveUsers = [
   "polofresco"
 
 ];
+
+
+
+// NOTA: "_u" è stato rimosso dalla lista. Era stato aggiunto a mano
+// perché il vecchio parser HTML lo estraeva come falso username dal
+// link "instagram.com/_u/username" presente in following.html.
+// Il parser corretto (instagramParser.ts) ora gestisce quel formato
+// di link correttamente, quindi non serve più questa eccezione.
 
 
 
