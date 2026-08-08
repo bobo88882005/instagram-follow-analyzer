@@ -10,6 +10,8 @@ type InstagramData = {
 
 const manualInactiveUsers = [
 
+  "_rimbaudelaire",
+  "chloe_gad_93",
   "seguiti",
   "andrea.old",
   "siro.valmont",
