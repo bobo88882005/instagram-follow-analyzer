@@ -319,7 +319,7 @@ function App() {
 
           >
 
-            👥
+            <span className="icon">👥</span>
 
             <span>
               Followers
@@ -352,7 +352,7 @@ function App() {
 
           >
 
-            ➕
+            <span className="icon">➕</span>
 
             <span>
               Following
@@ -385,7 +385,7 @@ function App() {
 
           >
 
-            🔴
+            <span className="icon">🔴</span>
 
             <span>
               Non ricambiano
@@ -420,7 +420,7 @@ function App() {
 
           >
 
-            🕓
+            <span className="icon">🕓</span>
 
             <span>
               Pending Requests
@@ -570,7 +570,7 @@ function App() {
 
         >
 
-          <Ghost/>
+          <Ghost size={17}/>
 
 
           <span>
@@ -589,7 +589,7 @@ function App() {
           </strong>
 
 
-          <ChevronRight/>
+          <ChevronRight size={15}/>
 
 
         </div>
@@ -634,7 +634,7 @@ function App() {
 
         >
 
-          <UserPlus/>
+          <UserPlus size={17}/>
 
 
           <span>
@@ -653,7 +653,7 @@ function App() {
           </strong>
 
 
-          <ChevronRight/>
+          <ChevronRight size={15}/>
 
 
         </div>
@@ -698,7 +698,7 @@ function App() {
 
         >
 
-          <UserX/>
+          <UserX size={17}/>
 
 
           <span>
@@ -717,7 +717,7 @@ function App() {
           </strong>
 
 
-          <ChevronRight/>
+          <ChevronRight size={15}/>
 
 
         </div>
