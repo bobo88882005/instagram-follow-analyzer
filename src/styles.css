@@ -1317,3 +1317,97 @@ h1 {
 
 
 }
+
+
+
+
+/* ─────────────────────────────────────────────
+   Schermi orizzontali (landscape) — layout a
+   due colonne: griglie a sinistra, sezione
+   aperta a destra, invece che impilate sotto.
+   Nessun elemento nuovo: riusa gli stessi blocchi
+   già presenti, posizionati via CSS Grid areas.
+   ───────────────────────────────────────────── */
+
+@media(orientation:landscape) and (max-height:600px){
+
+
+  .app {
+
+    padding:14px 20px;
+
+  }
+
+
+
+  .card {
+
+    display:grid;
+
+    grid-template-columns:minmax(230px,340px) 1fr;
+
+    grid-template-rows:auto auto auto 1fr;
+
+    grid-template-areas:
+
+      "header    header"
+      "topgrid   popup"
+      "extragrid popup"
+      ".         popup";
+
+    column-gap:14px;
+
+    row-gap:8px;
+
+    max-width:780px;
+
+    max-height:100%;
+
+    overflow:hidden;
+
+  }
+
+
+
+  h1 {
+
+    grid-area:header;
+
+    margin-bottom:6px;
+
+  }
+
+
+
+  .top-grid {
+
+    grid-area:topgrid;
+
+    margin-bottom:0;
+
+  }
+
+
+
+  .extra-grid {
+
+    grid-area:extragrid;
+
+    margin-bottom:0;
+
+  }
+
+
+
+  .popup-section {
+
+    grid-area:popup;
+
+    margin-bottom:0;
+
+    height:100%;
+
+  }
+
+
+}
