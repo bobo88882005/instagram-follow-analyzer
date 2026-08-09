@@ -28,9 +28,9 @@ body {
 
   justify-content:center;
 
-  align-items:center;
+  align-items:flex-start;
 
-  padding:15px;
+  padding:40px 15px;
 
   position:relative;
 
@@ -452,7 +452,7 @@ h1 {
 
   justify-content:center;
 
-  gap:4px;
+  gap:2px;
 
   text-align:center;
 
@@ -540,6 +540,8 @@ h1 {
 
   opacity:.75;
 
+  line-height:1.15;
+
   white-space:nowrap;
 
   overflow:hidden;
@@ -559,6 +561,8 @@ h1 {
   font-size:15px;
 
   font-weight:800;
+
+  line-height:1;
 
 }
 
@@ -1165,7 +1169,7 @@ h1 {
 
   .app {
 
-    padding:8px;
+    padding:16px 8px;
 
   }
 
