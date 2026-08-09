@@ -3,9 +3,18 @@
 }
 
 
-body {
+html, body {
+
+  height:100%;
 
   margin:0;
+
+  overflow:hidden;
+
+}
+
+
+body {
 
   font-family:
     Inter,
@@ -20,9 +29,17 @@ body {
 
 
 
+#root {
+
+  height:100%;
+
+}
+
+
+
 .app {
 
-  min-height:100vh;
+  height:100vh;
 
   display:flex;
 
@@ -33,6 +50,8 @@ body {
   padding:40px 15px;
 
   position:relative;
+
+  overflow:hidden;
 
 }
 
@@ -89,9 +108,18 @@ body {
 
   max-width:520px;
 
+  max-height:100%;
+
   position:relative;
 
   z-index:1;
+
+
+  display:flex;
+
+  flex-direction:column;
+
+  overflow:hidden;
 
 
   background:
@@ -260,6 +288,8 @@ body {
 
 h1 {
 
+  flex-shrink:0;
+
   display:flex;
 
   align-items:center;
@@ -386,6 +416,8 @@ h1 {
 
 .top-grid {
 
+  flex-shrink:0;
+
   display:grid;
 
   grid-template-columns:1fr 1fr;
@@ -409,6 +441,8 @@ h1 {
   min-width:0;
 
   width:100%;
+
+  touch-action:none;
 
 
   aspect-ratio:2.5;
@@ -655,6 +689,10 @@ h1 {
 .user-list {
 
 
+  flex:1;
+
+  min-height:0;
+
   max-height:428px;
 
 
@@ -857,6 +895,8 @@ h1 {
 
 .extra-grid {
 
+  flex-shrink:0;
+
   display:grid;
 
   grid-template-columns:1fr 1fr 1fr;
@@ -879,6 +919,8 @@ h1 {
   min-width:0;
 
   width:100%;
+
+  touch-action:none;
 
 
   aspect-ratio:2.6;
@@ -1129,6 +1171,14 @@ h1 {
 
 
 .popup-section {
+
+  flex:1;
+
+  min-height:0;
+
+  display:flex;
+
+  flex-direction:column;
 
   background:
 
