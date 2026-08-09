@@ -665,14 +665,7 @@ h1 {
   touch-action:pan-y;
 
 
-  display:flex;
-
-  flex-direction:column;
-
-  gap:5px;
-
-
-  margin-bottom:10px;
+  margin-bottom:0;
 
 
 }
@@ -772,7 +765,7 @@ h1 {
 
   padding:8px 15px;
 
-  margin:0 3px;
+  margin:0 3px 5px 3px;
 
   border-radius:999px;
 
