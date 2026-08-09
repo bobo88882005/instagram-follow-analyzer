@@ -268,7 +268,108 @@ h1 {
 
   font-size:22px;
 
-  margin:0 0 15px;
+  margin:0 0 14px;
+
+}
+
+
+
+
+.header-actions {
+
+  display:flex;
+
+  gap:6px;
+
+  margin-left:auto;
+
+}
+
+
+
+
+.icon-btn {
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  width:32px;
+
+  height:32px;
+
+  border-radius:11px;
+
+  border:
+
+    1px solid rgba(255,255,255,.14);
+
+  background:
+
+    linear-gradient(
+      160deg,
+      rgba(255,255,255,.14),
+      rgba(255,255,255,.05)
+    );
+
+  box-shadow:
+
+    inset 0 1px 0 rgba(255,255,255,.18);
+
+  color:white;
+
+  cursor:pointer;
+
+  transition:
+
+    background .2s ease,
+    transform .15s ease;
+
+}
+
+
+
+
+.icon-btn:hover {
+
+  background:
+
+    linear-gradient(
+      160deg,
+      rgba(255,255,255,.22),
+      rgba(255,255,255,.08)
+    );
+
+}
+
+
+
+
+.icon-btn:active {
+
+  transform:scale(.92);
+
+}
+
+
+
+
+.spin {
+
+  animation:spin 1s linear infinite;
+
+}
+
+
+
+
+@keyframes spin {
+
+  from { transform:rotate(0deg); }
+
+  to { transform:rotate(360deg); }
 
 }
 
@@ -310,11 +411,11 @@ h1 {
   width:100%;
 
 
-  aspect-ratio:1.85;
+  aspect-ratio:2.5;
 
-  border-radius:22px;
+  border-radius:20px;
 
-  padding:8px;
+  padding:7px;
 
 
   background:
@@ -694,11 +795,11 @@ h1 {
   width:100%;
 
 
-  aspect-ratio:1.9;
+  aspect-ratio:2.6;
 
-  border-radius:17px;
+  border-radius:15px;
 
-  padding:6px 4px;
+  padding:6px 8px;
 
 
   background:
@@ -729,15 +830,15 @@ h1 {
 
   display:flex;
 
-  flex-direction:column;
+  flex-direction:row;
 
   align-items:center;
 
-  justify-content:center;
+  justify-content:flex-start;
 
-  gap:3px;
+  gap:7px;
 
-  text-align:center;
+  text-align:left;
 
 
   box-shadow:
@@ -799,15 +900,34 @@ h1 {
 
 .extra-card svg {
 
-  width:15px;
+  width:13px;
 
-  height:15px;
+  height:13px;
 
   opacity:.8;
 
   stroke-width:2.2;
 
   flex-shrink:0;
+
+}
+
+
+
+
+.extra-card-text {
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:flex-start;
+
+  justify-content:center;
+
+  min-width:0;
+
+  overflow:hidden;
 
 }
 
