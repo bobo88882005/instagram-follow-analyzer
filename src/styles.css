@@ -655,10 +655,14 @@ h1 {
 .user-list {
 
 
-  max-height:440px;
+  max-height:432px;
 
 
   overflow-y:auto;
+
+  overflow-x:hidden;
+
+  touch-action:pan-y;
 
 
   margin-bottom:10px;
@@ -683,11 +687,11 @@ h1 {
   align-items:center;
 
 
-  padding:8px 13px;
+  padding:8px 15px;
 
-  margin-bottom:5px;
+  margin:0 3px 5px 3px;
 
-  border-radius:6% / 40%;
+  border-radius:999px;
 
 
   background:
