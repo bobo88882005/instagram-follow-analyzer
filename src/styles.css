@@ -300,7 +300,7 @@ h1 {
 
   height:32px;
 
-  border-radius:11px;
+  border-radius:50%;
 
   border:
 
@@ -413,7 +413,7 @@ h1 {
 
   aspect-ratio:2.5;
 
-  border-radius:20px;
+  border-radius:16% / 40%;
 
   padding:7px;
 
@@ -683,11 +683,11 @@ h1 {
   align-items:center;
 
 
-  padding:10px 13px;
+  padding:8px 13px;
 
-  margin-bottom:6px;
+  margin-bottom:5px;
 
-  border-radius:16px;
+  border-radius:6% / 40%;
 
 
   background:
@@ -709,6 +709,8 @@ h1 {
   text-decoration:none;
 
   font-size:14px;
+
+  line-height:1.2;
 
 
   box-shadow:
@@ -801,7 +803,7 @@ h1 {
 
   aspect-ratio:2.6;
 
-  border-radius:15px;
+  border-radius:15% / 38%;
 
   padding:6px 8px;
 
