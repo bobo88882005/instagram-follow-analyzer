@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import {
   Upload,
@@ -124,6 +124,49 @@ function App() {
   }) {
 
 
+    const listRef =
+      useRef<HTMLDivElement>(null);
+
+
+    const [canScrollUp, setCanScrollUp] =
+      useState(false);
+
+
+    const [canScrollDown, setCanScrollDown] =
+      useState(false);
+
+
+
+    function updateFade() {
+
+      const el =
+        listRef.current;
+
+      if (!el)
+        return;
+
+      setCanScrollUp(
+        el.scrollTop > 4
+      );
+
+      setCanScrollDown(
+        el.scrollTop + el.clientHeight
+        <
+        el.scrollHeight - 4
+      );
+
+    }
+
+
+
+    useEffect(() => {
+
+      updateFade();
+
+    }, [users]);
+
+
+
     if(!users || users.length===0)
 
       return (
@@ -139,9 +182,28 @@ function App() {
 
 
 
+    const listClasses =
+      [
+        "user-list",
+        canScrollUp ? "fade-top" : "",
+        canScrollDown ? "fade-bottom" : ""
+      ]
+      .filter(Boolean)
+      .join(" ");
+
+
+
     return (
 
-      <div className="user-list">
+      <div
+
+        className={listClasses}
+
+        ref={listRef}
+
+        onScroll={updateFade}
+
+      >
 
         {
           users
