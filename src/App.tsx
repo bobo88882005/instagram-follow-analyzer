@@ -10,7 +10,8 @@ import {
   Inbox,
   Undo2,
   RefreshCcw,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from "lucide-react";
 
 import { readInstagramZip } from "./parser/zipParser";
@@ -52,6 +53,8 @@ function App() {
 
     setLoading(true);
 
+    setSection(null);
+
 
 
     try {
@@ -88,6 +91,9 @@ function App() {
     setLoading(false);
 
 
+    e.target.value = "";
+
+
   }
 
 
@@ -114,7 +120,7 @@ function App() {
   function UserList({
     users
   }:{
-    users:string[]
+    users?:string[]
   }) {
 
 
@@ -214,76 +220,19 @@ function App() {
 
 
 
+        <input
 
+          id="zipInput"
 
-      {!result && (
+          hidden
 
-        <>
+          type="file"
 
+          accept=".zip"
 
-          <div className="logo">
+          onChange={handleUpload}
 
-            Instagram Analyzer
-
-          </div>
-
-
-
-          <p className="subtitle">
-
-            Analizza followers e following
-
-          </p>
-
-
-
-
-          <label className="upload-button">
-
-
-            <Upload size={20}/>
-
-
-            {
-              loading
-              ?
-              "Analisi..."
-              :
-              "Carica ZIP Instagram"
-            }
-
-
-
-            <input
-
-              hidden
-
-              type="file"
-
-              accept=".zip"
-
-              onChange={handleUpload}
-
-            />
-
-
-          </label>
-
-
-        </>
-
-      )}
-
-
-
-
-
-
-
-      {result && (
-
-        <>
-
+        />
 
 
 
@@ -294,11 +243,51 @@ function App() {
 
           Dashboard
 
+
+          <div className="header-actions">
+
+            <label
+
+              htmlFor="zipInput"
+
+              className="icon-btn"
+
+              title="Carica ZIP"
+
+            >
+
+              {
+                loading
+                ?
+                <Loader2 size={16} className="spin"/>
+                :
+                <Upload size={16}/>
+              }
+
+            </label>
+
+
+
+            <button
+
+              className="icon-btn"
+
+              title="Nuova analisi"
+
+              onClick={() => {
+                setResult(null);
+                setSection(null);
+              }}
+
+            >
+
+              <RefreshCcw size={16}/>
+
+            </button>
+
+          </div>
+
         </h1>
-
-
-
-
 
 
 
@@ -330,7 +319,7 @@ function App() {
 
             <strong>
 
-              {result.followersCount}
+              {result?.followersCount ?? 0}
 
             </strong>
 
@@ -363,7 +352,7 @@ function App() {
 
             <strong>
 
-              {result.followingCount}
+              {result?.followingCount ?? 0}
 
             </strong>
 
@@ -397,7 +386,7 @@ function App() {
             <strong>
 
               {
-                result.notFollowingBack.length
+                result?.notFollowingBack?.length ?? 0
               }
 
             </strong>
@@ -432,7 +421,7 @@ function App() {
             <strong>
 
               {
-                result.pendingRequests?.length ?? 0
+                result?.pendingRequests?.length ?? 0
               }
 
             </strong>
@@ -464,19 +453,23 @@ function App() {
 
           >
 
-            <Ghost size={15}/>
+            <Ghost size={14}/>
 
-            <span>
-              Inattivi
-            </span>
+            <div className="extra-card-text">
 
-            <strong>
+              <span>
+                Inattivi
+              </span>
 
-              {
-                result.possibleInactive.length
-              }
+              <strong>
 
-            </strong>
+                {
+                  result?.possibleInactive?.length ?? 0
+                }
+
+              </strong>
+
+            </div>
 
           </div>
 
@@ -499,19 +492,23 @@ function App() {
 
           >
 
-            <Inbox size={15}/>
+            <Inbox size={14}/>
 
-            <span>
-              Ricevute
-            </span>
+            <div className="extra-card-text">
 
-            <strong>
+              <span>
+                Ricevute
+              </span>
 
-              {
-                result.receivedRequests?.length ?? 0
-              }
+              <strong>
 
-            </strong>
+                {
+                  result?.receivedRequests?.length ?? 0
+                }
+
+              </strong>
+
+            </div>
 
           </div>
 
@@ -534,19 +531,23 @@ function App() {
 
           >
 
-            <Undo2 size={15}/>
+            <Undo2 size={14}/>
 
-            <span>
-              Unfollowed
-            </span>
+            <div className="extra-card-text">
 
-            <strong>
+              <span>
+                Unfollowed
+              </span>
 
-              {
-                result.recentlyUnfollowed?.length ?? 0
-              }
+              <strong>
 
-            </strong>
+                {
+                  result?.recentlyUnfollowed?.length ?? 0
+                }
+
+              </strong>
+
+            </div>
 
           </div>
 
@@ -564,7 +565,7 @@ function App() {
               <UserList
 
                 users={
-                  result.followers
+                  result?.followers
                 }
 
               />
@@ -585,7 +586,7 @@ function App() {
               <UserList
 
                 users={
-                  result.following
+                  result?.following
                 }
 
               />
@@ -606,7 +607,7 @@ function App() {
               <UserList
 
                 users={
-                  result.notFollowingBack
+                  result?.notFollowingBack
                 }
 
               />
@@ -627,7 +628,7 @@ function App() {
               <UserList
 
                 users={
-                  result.pendingRequests
+                  result?.pendingRequests
                 }
 
               />
@@ -648,7 +649,7 @@ function App() {
               <UserList
 
                 users={
-                  result.possibleInactive
+                  result?.possibleInactive
                 }
 
               />
@@ -669,7 +670,7 @@ function App() {
               <UserList
 
                 users={
-                  result.receivedRequests
+                  result?.receivedRequests
                 }
 
               />
@@ -690,7 +691,7 @@ function App() {
               <UserList
 
                 users={
-                  result.recentlyUnfollowed
+                  result?.recentlyUnfollowed
                 }
 
               />
@@ -699,41 +700,6 @@ function App() {
 
           )
         }
-
-
-
-
-
-
-
-
-
-        <button
-
-          className="reset"
-
-          onClick={() =>
-            setResult(null)
-          }
-
-        >
-
-          <RefreshCcw size={18}/>
-
-          Nuova analisi
-
-
-        </button>
-
-
-
-
-
-        </>
-
-      )}
-
-
 
 
 
