@@ -668,6 +668,62 @@ h1 {
   margin-bottom:10px;
 
 
+}
+
+
+
+
+/* Sfumatura dinamica: appare solo dal lato in cui c'è
+   ancora contenuto da scorrere (classi aggiunte via JS) */
+
+.user-list.fade-top:not(.fade-bottom) {
+
+  -webkit-mask-image:
+
+    linear-gradient(
+      to bottom,
+      transparent 0,
+      black 24px
+    );
+
+  mask-image:
+
+    linear-gradient(
+      to bottom,
+      transparent 0,
+      black 24px
+    );
+
+}
+
+
+
+
+.user-list.fade-bottom:not(.fade-top) {
+
+  -webkit-mask-image:
+
+    linear-gradient(
+      to bottom,
+      black calc(100% - 24px),
+      transparent 100%
+    );
+
+  mask-image:
+
+    linear-gradient(
+      to bottom,
+      black calc(100% - 24px),
+      transparent 100%
+    );
+
+}
+
+
+
+
+.user-list.fade-top.fade-bottom {
+
   -webkit-mask-image:
 
     linear-gradient(
@@ -687,7 +743,6 @@ h1 {
       black calc(100% - 24px),
       transparent 100%
     );
-
 
 }
 
