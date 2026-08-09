@@ -8,6 +8,20 @@ type InstagramData = {
 
 
 
+// Esclusione manuale dedicata a "Pending Requests": nomi che non
+// devono comparire in questa sezione, indipendentemente dal fatto
+// che siano ancora presenti nell'export. Non ha nulla a che vedere
+// con manualInactiveUsers (quella riguarda solo i following).
+const manualPendingExcluded = [
+
+  "ohnologo",
+  "badeer_njm",
+  "1993_bluesky"
+
+];
+
+
+
 const manualInactiveUsers = [
 
   "_rimbaudelaire",
@@ -387,6 +401,9 @@ export function analyzeInstagram(
     pendingRequests:
       cleanUsers(
         data.pendingRequests || []
+      ).filter(
+        user =>
+        !manualPendingExcluded.includes(user)
       ),
 
 
