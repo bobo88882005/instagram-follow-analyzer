@@ -655,7 +655,7 @@ h1 {
 .user-list {
 
 
-  max-height:432px;
+  max-height:428px;
 
 
   overflow-y:auto;
@@ -666,6 +666,27 @@ h1 {
 
 
   margin-bottom:10px;
+
+
+  -webkit-mask-image:
+
+    linear-gradient(
+      to bottom,
+      transparent 0,
+      black 24px,
+      black calc(100% - 24px),
+      transparent 100%
+    );
+
+  mask-image:
+
+    linear-gradient(
+      to bottom,
+      transparent 0,
+      black 24px,
+      black calc(100% - 24px),
+      transparent 100%
+    );
 
 
 }
