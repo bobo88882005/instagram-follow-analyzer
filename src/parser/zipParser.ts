@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import { extractUsernames } from "./instagramParser";
+import { extractUsernames, InstagramEntry } from "./instagramParser";
 
 
 export async function readInstagramZip(
@@ -16,11 +16,11 @@ export async function readInstagramZip(
     receivedRequests: [],
     recentlyUnfollowed: []
   } as {
-    followers:string[];
-    following:string[];
-    pendingRequests:string[];
-    receivedRequests:string[];
-    recentlyUnfollowed:string[];
+    followers:InstagramEntry[];
+    following:InstagramEntry[];
+    pendingRequests:InstagramEntry[];
+    receivedRequests:InstagramEntry[];
+    recentlyUnfollowed:InstagramEntry[];
   };
 
 
