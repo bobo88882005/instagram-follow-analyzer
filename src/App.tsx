@@ -16,6 +16,7 @@ import {
 
 import { readInstagramZip } from "./parser/zipParser";
 import { analyzeInstagram } from "./utils/analyzer";
+import { InstagramEntry } from "./parser/instagramParser";
 
 
 
@@ -117,10 +118,89 @@ function App() {
 
 
 
+  // Mappa delle abbreviazioni dei mesi nelle lingue più comuni
+  // usate da Instagram per generare l'export (varia in base alla
+  // lingua dell'account). Chiavi già normalizzate: minuscolo,
+  // senza accenti né punti.
+  const monthMap:{[key:string]:number} = {
+
+    jan:1, gen:1,
+    feb:2,
+    mar:3, mrt:3,
+    apr:4, abr:4,
+    may:5, mag:5, mai:5, mei:5,
+    jun:6, giu:6,
+    jul:7, lug:7, juil:7,
+    aug:8, ago:8, aou:8,
+    sep:9, set:9, sept:9,
+    oct:10, ott:10, out:10, okt:10,
+    nov:11,
+    dec:12, dic:12, dez:12
+
+  };
+
+
+
+  function formatDate(
+    raw?:string
+  ) {
+
+    if (!raw)
+      return null;
+
+
+    const match =
+      raw.match(
+        /([a-zà-ÿ]+)\.?\s+(\d{1,2}),\s*(\d{4})/i
+      );
+
+    if (!match)
+      return raw;
+
+
+    const monthToken =
+      match[1]
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\.$/, "");
+
+
+    const month =
+      monthMap[monthToken]
+      ??
+      monthMap[monthToken.slice(0,3)];
+
+    if (!month)
+      return raw;
+
+
+    const day =
+      match[2].padStart(2,"0");
+
+    const year =
+      match[3];
+
+
+    return (
+      day + "/" +
+      String(month).padStart(2,"0") + "/" +
+      year
+    );
+
+  }
+
+
+
+
+
+
+
+
   function UserList({
     users
   }:{
-    users?:string[]
+    users?:InstagramEntry[]
   }) {
 
 
@@ -209,14 +289,14 @@ function App() {
           users
           .slice(0,300)
           .map(
-            user => (
+            ({ username, date }) => (
 
               <a
 
-                key={user}
+                key={username}
 
                 href={
-                  profileLink(user)
+                  profileLink(username)
                 }
 
                 target="_blank"
@@ -225,9 +305,26 @@ function App() {
 
               >
 
-                @{user}
+                <span className="user-list-name">
 
-                <ChevronRight size={15}/>
+                  @{username}
+
+                  <ChevronRight size={15}/>
+
+                </span>
+
+
+                {
+                  date && (
+
+                    <span className="user-list-date">
+
+                      {formatDate(date)}
+
+                    </span>
+
+                  )
+                }
 
               </a>
 
