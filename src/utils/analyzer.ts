@@ -1,9 +1,12 @@
+import { InstagramEntry } from "./parser/instagramParser";
+
+
 type InstagramData = {
-  followers: string[];
-  following: string[];
-  pendingRequests?: string[];
-  receivedRequests?: string[];
-  recentlyUnfollowed?: string[];
+  followers: InstagramEntry[];
+  following: InstagramEntry[];
+  pendingRequests?: InstagramEntry[];
+  receivedRequests?: InstagramEntry[];
+  recentlyUnfollowed?: InstagramEntry[];
 };
 
 
@@ -172,7 +175,12 @@ function normalize(user:string) {
 
 
 
-function cleanUsers(users:string[] = []) {
+// Pulisce e deduplica una lista di entry {username, date}.
+// Il filtro (blacklist/regex) agisce solo sullo username;
+// la data associata viene mantenuta intatta.
+function cleanUsers(
+  entries:InstagramEntry[] = []
+) {
 
   const blacklist = [
 
@@ -187,41 +195,54 @@ function cleanUsers(users:string[] = []) {
   ];
 
 
+  const seen =
+    new Set<string>();
 
-  return Array.from(
-
-    new Set(
-
-      users
-
-      .map(normalize)
-
-      .filter(user => {
+  const result:InstagramEntry[] = [];
 
 
-        if (!user)
-          return false;
+  for (
+    const entry of entries
+  ) {
+
+    const user =
+      normalize(entry.username);
 
 
-
-        if (
-          blacklist.some(
-            item =>
-            user.includes(item)
-          )
-        )
-          return false;
+    if (!user)
+      continue;
 
 
-
-        return /^[a-z0-9._]{2,}$/.test(user);
-
-
-      })
-
+    if (
+      blacklist.some(
+        item =>
+        user.includes(item)
+      )
     )
+      continue;
 
-  );
+
+    if (
+      !/^[a-z0-9._]{2,}$/.test(user)
+    )
+      continue;
+
+
+    if (seen.has(user))
+      continue;
+
+
+    seen.add(user);
+
+    result.push({
+      username: user,
+      date: entry.date
+    });
+
+  }
+
+
+  return result;
 
 }
 
@@ -232,11 +253,11 @@ function cleanUsers(users:string[] = []) {
 
 
 function findPossibleInactive(
-  users:string[]
+  entries:InstagramEntry[]
 ) {
 
 
-  return users.filter(user => {
+  return entries.filter(({ username: user }) => {
 
 
     // Blacklist manuale e pattern algoritmico si comportano
@@ -302,25 +323,25 @@ export function analyzeInstagram(
 
   const followersSet =
     new Set(
-      followers
+      followers.map(e => e.username)
     );
 
 
 
   // Blacklist manuale e pattern algoritmico si comportano allo
   // stesso modo: entrambi producono solo dei CANDIDATI inattivi.
+  const possibleInactiveRawMap =
+    new Map<string, InstagramEntry>();
+
+  for (
+    const entry of findPossibleInactive(followingAll)
+  ) {
+    possibleInactiveRawMap.set(entry.username, entry);
+  }
+
   const possibleInactiveRaw =
-
     Array.from(
-
-      new Set([
-
-        ...findPossibleInactive(
-          followingAll
-        )
-
-      ])
-
+      possibleInactiveRawMap.values()
     );
 
 
@@ -332,8 +353,8 @@ export function analyzeInstagram(
 
     possibleInactiveRaw.filter(
 
-      user =>
-      !followersSet.has(user)
+      ({ username }) =>
+      !followersSet.has(username)
 
     );
 
@@ -341,7 +362,7 @@ export function analyzeInstagram(
 
   const inactiveSet =
     new Set(
-      possibleInactive
+      possibleInactive.map(e => e.username)
     );
 
 
@@ -353,8 +374,8 @@ export function analyzeInstagram(
 
     followingAll.filter(
 
-      user =>
-      !inactiveSet.has(user)
+      ({ username }) =>
+      !inactiveSet.has(username)
 
     );
 
@@ -364,8 +385,8 @@ export function analyzeInstagram(
 
     following.filter(
 
-      user =>
-      !followersSet.has(user)
+      ({ username }) =>
+      !followersSet.has(username)
 
     );
 
@@ -402,8 +423,8 @@ export function analyzeInstagram(
       cleanUsers(
         data.pendingRequests || []
       ).filter(
-        user =>
-        !manualPendingExcluded.includes(user)
+        ({ username }) =>
+        !manualPendingExcluded.includes(username)
       ),
 
 
