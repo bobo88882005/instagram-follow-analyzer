@@ -10,7 +10,6 @@ import {
   Inbox,
   Undo2,
   RefreshCcw,
-  ChevronRight,
   Loader2
 } from "lucide-react";
 
@@ -308,8 +307,6 @@ function App() {
                 <span className="user-list-name">
 
                   @{username}
-
-                  <ChevronRight size={15}/>
 
                 </span>
 
