@@ -846,6 +846,46 @@ h1 {
 
 
 
+.user-list-name {
+
+  display:flex;
+
+  align-items:center;
+
+  gap:4px;
+
+  flex:1;
+
+  min-width:0;
+
+  overflow:hidden;
+
+  white-space:nowrap;
+
+  text-overflow:ellipsis;
+
+}
+
+
+
+
+.user-list-date {
+
+  flex-shrink:0;
+
+  margin-left:10px;
+
+  font-size:10.5px;
+
+  opacity:.5;
+
+  white-space:nowrap;
+
+}
+
+
+
+
 
 .user-list a:hover {
 
