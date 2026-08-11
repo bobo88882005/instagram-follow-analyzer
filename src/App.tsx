@@ -207,6 +207,17 @@ function App() {
   }) {
 
 
+    // Altezza fissa di ogni riga (px), calcolata dal CSS attuale
+    // di .user-list a: padding 8px*2 + line-height 14px*1.2 +
+    // bordo 1px*2 + margine inferiore 5px ≈ 39px.
+    // NOTA: se in futuro cambi padding/font/margine della pillola
+    // in style.css, questo valore va aggiornato di conseguenza,
+    // altrimenti lo scroll virtuale perde la sincronia con l'altezza reale.
+    const ROW_HEIGHT = 39;
+
+    const OVERSCAN = 8;
+
+
     const listRef =
       useRef<HTMLDivElement>(null);
 
@@ -217,6 +228,14 @@ function App() {
 
     const [canScrollDown, setCanScrollDown] =
       useState(false);
+
+
+    const [scrollTop, setScrollTop] =
+      useState(0);
+
+
+    const [viewportHeight, setViewportHeight] =
+      useState(0);
 
 
 
@@ -236,6 +255,14 @@ function App() {
         el.scrollTop + el.clientHeight
         <
         el.scrollHeight - 4
+      );
+
+      setScrollTop(
+        el.scrollTop
+      );
+
+      setViewportHeight(
+        el.clientHeight
       );
 
     }
@@ -276,6 +303,40 @@ function App() {
 
 
 
+    // Calcolo quali indici sono effettivamente visibili (con un
+    // margine OVERSCAN sopra e sotto, per uno scroll più fluido),
+    // invece di renderizzare tutti gli elementi nel DOM.
+    const total =
+      users.length;
+
+    const startIndex =
+      Math.max(
+        0,
+        Math.floor(scrollTop / ROW_HEIGHT) - OVERSCAN
+      );
+
+    const visibleCount =
+      Math.ceil(viewportHeight / ROW_HEIGHT)
+      +
+      OVERSCAN * 2;
+
+    const endIndex =
+      Math.min(
+        total,
+        startIndex + visibleCount
+      );
+
+    const topPadding =
+      startIndex * ROW_HEIGHT;
+
+    const bottomPadding =
+      (total - endIndex) * ROW_HEIGHT;
+
+    const visibleUsers =
+      users.slice(startIndex, endIndex);
+
+
+
     return (
 
       <div
@@ -286,10 +347,16 @@ function App() {
 
         onScroll={updateFade}
 
+        style={{
+          paddingTop: topPadding,
+          paddingBottom: bottomPadding,
+          boxSizing: "border-box"
+        }}
+
       >
 
         {
-          users
+          visibleUsers
           .map(
             ({ username, date }) => {
 
