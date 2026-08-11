@@ -7,6 +7,7 @@ type InstagramData = {
   pendingRequests?: InstagramEntry[];
   receivedRequests?: InstagramEntry[];
   recentlyUnfollowed?: InstagramEntry[];
+  closeFriends?: InstagramEntry[];
 };
 
 
@@ -439,6 +440,13 @@ export function analyzeInstagram(
     recentlyUnfollowed:
       cleanUsers(
         data.recentlyUnfollowed || []
+      ),
+
+
+
+    closeFriends:
+      cleanUsers(
+        data.closeFriends || []
       )
 
 
