@@ -971,6 +971,50 @@ h1 {
 
 
 
+/* "Recently Unfollowed" — stesso rosso di "Non ricambiano" */
+
+.user-list a.is-unfollowed {
+
+  border-color:
+
+    rgba(248,113,113,.45);
+
+}
+
+
+
+
+.user-list a.is-unfollowed .user-list-name {
+
+  color:#f87171;
+
+}
+
+
+
+
+/* "Possibili inattivi" — arancione */
+
+.user-list a.is-inactive {
+
+  border-color:
+
+    rgba(251,146,60,.45);
+
+}
+
+
+
+
+.user-list a.is-inactive .user-list-name {
+
+  color:#fb923c;
+
+}
+
+
+
+
 
 .user-list a:hover {
 
