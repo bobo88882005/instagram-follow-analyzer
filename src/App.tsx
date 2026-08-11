@@ -207,18 +207,21 @@ function App() {
   }) {
 
 
-    // Altezza fissa di ogni riga (px), calcolata dal CSS attuale
-    // di .user-list a: padding 8px*2 + line-height 14px*1.2 +
-    // bordo 1px*2 + margine inferiore 5px ≈ 39px.
-    // NOTA: se in futuro cambi padding/font/margine della pillola
-    // in style.css, questo valore va aggiornato di conseguenza,
-    // altrimenti lo scroll virtuale perde la sincronia con l'altezza reale.
-    const ROW_HEIGHT = 39;
-
-    const OVERSCAN = 8;
+    // Invece di renderizzare tutta la lista o ricalcolare quali
+    // righe mostrare ad ogni pixel di scroll (costoso: causa
+    // ricalcoli di layout continui), carichiamo i risultati a
+    // BLOCCHI: i primi 300, poi altri 300 quando ci si avvicina
+    // al fondo. Il rilevamento "vicino al fondo" usa
+    // IntersectionObserver, che scatta solo quando serve davvero,
+    // non ad ogni evento di scroll.
+    const BATCH_SIZE = 300;
 
 
     const listRef =
+      useRef<HTMLDivElement>(null);
+
+
+    const sentinelRef =
       useRef<HTMLDivElement>(null);
 
 
@@ -234,12 +237,8 @@ function App() {
       useState(false);
 
 
-    const [scrollTop, setScrollTop] =
-      useState(0);
-
-
-    const [viewportHeight, setViewportHeight] =
-      useState(0);
+    const [visibleCount, setVisibleCount] =
+      useState(BATCH_SIZE);
 
 
 
@@ -261,23 +260,13 @@ function App() {
         el.scrollHeight - 4
       );
 
-      setScrollTop(
-        el.scrollTop
-      );
-
-      setViewportHeight(
-        el.clientHeight
-      );
-
     }
 
 
 
-    // Durante lo scroll, il browser può generare eventi molto più
-    // spesso di quanto riesca a disegnare i frame (specialmente su
-    // mobile). Allineando l'aggiornamento a requestAnimationFrame,
-    // ricalcoliamo al massimo una volta per frame invece che ad
-    // ogni singolo evento grezzo, mantenendo lo scroll fluido.
+    // Throttle via requestAnimationFrame: la sfumatura sopra/sotto
+    // si aggiorna al massimo una volta per frame durante lo scroll,
+    // non ad ogni singolo evento grezzo.
     function handleScroll() {
 
       if (rafRef.current !== null)
@@ -309,9 +298,64 @@ function App() {
 
 
 
+    // Quando cambia la lista (es. si apre un'altra sezione),
+    // si riparte dal primo blocco da 300.
+    useEffect(() => {
+
+      setVisibleCount(BATCH_SIZE);
+
+    }, [users]);
+
+
+
     useEffect(() => {
 
       updateFade();
+
+    }, [users, visibleCount]);
+
+
+
+    // Osserva un piccolo elemento "sentinella" in fondo alla
+    // lista: quando entra nell'area visibile, carica il blocco
+    // successivo di 300 risultati.
+    useEffect(() => {
+
+      const sentinel =
+        sentinelRef.current;
+
+      const root =
+        listRef.current;
+
+      if (!sentinel || !root)
+        return;
+
+      const observer =
+        new IntersectionObserver(
+          entries => {
+
+            if (entries[0].isIntersecting) {
+
+              setVisibleCount(
+                count =>
+                Math.min(
+                  users?.length ?? 0,
+                  count + BATCH_SIZE
+                )
+              );
+
+            }
+
+          },
+          {
+            root,
+            rootMargin: "600px 0px"
+          }
+        );
+
+      observer.observe(sentinel);
+
+      return () => observer.disconnect();
 
     }, [users]);
 
@@ -343,37 +387,11 @@ function App() {
 
 
 
-    // Calcolo quali indici sono effettivamente visibili (con un
-    // margine OVERSCAN sopra e sotto, per uno scroll più fluido),
-    // invece di renderizzare tutti gli elementi nel DOM.
-    const total =
-      users.length;
-
-    const startIndex =
-      Math.max(
-        0,
-        Math.floor(scrollTop / ROW_HEIGHT) - OVERSCAN
-      );
-
-    const visibleCount =
-      Math.ceil(viewportHeight / ROW_HEIGHT)
-      +
-      OVERSCAN * 2;
-
-    const endIndex =
-      Math.min(
-        total,
-        startIndex + visibleCount
-      );
-
-    const topPadding =
-      startIndex * ROW_HEIGHT;
-
-    const bottomPadding =
-      (total - endIndex) * ROW_HEIGHT;
-
     const visibleUsers =
-      users.slice(startIndex, endIndex);
+      users.slice(0, visibleCount);
+
+    const hasMore =
+      visibleCount < users.length;
 
 
 
@@ -386,12 +404,6 @@ function App() {
         ref={listRef}
 
         onScroll={handleScroll}
-
-        style={{
-          paddingTop: topPadding,
-          paddingBottom: bottomPadding,
-          boxSizing: "border-box"
-        }}
 
       >
 
@@ -460,6 +472,21 @@ function App() {
               );
 
             }
+
+          )
+        }
+
+
+        {
+          hasMore && (
+
+            <div
+
+              ref={sentinelRef}
+
+              style={{ height:1 }}
+
+            />
 
           )
         }
