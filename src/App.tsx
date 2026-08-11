@@ -197,9 +197,13 @@ function App() {
 
 
   function UserList({
-    users
+    users,
+    closeFriendsSet,
+    notFollowingBackSet
   }:{
-    users?:InstagramEntry[]
+    users?:InstagramEntry[],
+    closeFriendsSet?:Set<string>,
+    notFollowingBackSet?:Set<string>
   }) {
 
 
@@ -286,46 +290,69 @@ function App() {
 
         {
           users
-          .slice(0,300)
           .map(
-            ({ username, date }) => (
+            ({ username, date }) => {
 
-              <a
+              const isCloseFriend =
+                closeFriendsSet?.has(username)
+                ??
+                false;
 
-                key={username}
+              const isNotFollowingBack =
+                notFollowingBackSet?.has(username)
+                ??
+                false;
 
-                href={
-                  profileLink(username)
-                }
+              const pillClasses =
+                [
+                  isCloseFriend ? "is-close-friend" : "",
+                  isNotFollowingBack ? "is-not-following-back" : ""
+                ]
+                .filter(Boolean)
+                .join(" ");
 
-                target="_blank"
+              return (
 
-                rel="noreferrer"
+                <a
 
-              >
+                  key={username}
 
-                <span className="user-list-name">
+                  className={pillClasses}
 
-                  @{username}
+                  href={
+                    profileLink(username)
+                  }
 
-                </span>
+                  target="_blank"
+
+                  rel="noreferrer"
+
+                >
+
+                  <span className="user-list-name">
+
+                    @{username}
+
+                  </span>
 
 
-                {
-                  date && (
+                  {
+                    date && (
 
-                    <span className="user-list-date">
+                      <span className="user-list-date">
 
-                      {formatDate(date)}
+                        {formatDate(date)}
 
-                    </span>
+                      </span>
 
-                  )
-                }
+                    )
+                  }
 
-              </a>
+                </a>
 
-            )
+              );
+
+            }
 
           )
         }
@@ -355,6 +382,22 @@ function App() {
     );
 
   }
+
+
+
+
+  const closeFriendsSet =
+    new Set(
+      (result?.closeFriends ?? [])
+      .map((e:any) => e.username)
+    );
+
+
+  const notFollowingBackSet =
+    new Set(
+      (result?.notFollowingBack ?? [])
+      .map((e:any) => e.username)
+    );
 
 
 
@@ -724,6 +767,10 @@ function App() {
                   result?.followers
                 }
 
+              closeFriendsSet={closeFriendsSet}
+
+              notFollowingBackSet={notFollowingBackSet}
+
               />
 
             </div>
@@ -744,6 +791,10 @@ function App() {
                 users={
                   result?.following
                 }
+
+              closeFriendsSet={closeFriendsSet}
+
+              notFollowingBackSet={notFollowingBackSet}
 
               />
 
@@ -766,6 +817,10 @@ function App() {
                   result?.notFollowingBack
                 }
 
+              closeFriendsSet={closeFriendsSet}
+
+              notFollowingBackSet={notFollowingBackSet}
+
               />
 
             </div>
@@ -786,6 +841,10 @@ function App() {
                 users={
                   result?.pendingRequests
                 }
+
+              closeFriendsSet={closeFriendsSet}
+
+              notFollowingBackSet={notFollowingBackSet}
 
               />
 
@@ -808,6 +867,10 @@ function App() {
                   result?.possibleInactive
                 }
 
+              closeFriendsSet={closeFriendsSet}
+
+              notFollowingBackSet={notFollowingBackSet}
+
               />
 
             </div>
@@ -829,6 +892,10 @@ function App() {
                   result?.receivedRequests
                 }
 
+              closeFriendsSet={closeFriendsSet}
+
+              notFollowingBackSet={notFollowingBackSet}
+
               />
 
             </div>
@@ -849,6 +916,10 @@ function App() {
                 users={
                   result?.recentlyUnfollowed
                 }
+
+              closeFriendsSet={closeFriendsSet}
+
+              notFollowingBackSet={notFollowingBackSet}
 
               />
 
