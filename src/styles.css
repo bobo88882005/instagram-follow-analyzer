@@ -890,6 +890,117 @@ h1 {
 
 
 
+/* ─────────────────────────────────────────────
+   Pannello di ricerca globale
+   ───────────────────────────────────────────── */
+
+.search-section {
+
+  flex:1;
+
+  min-height:0;
+
+  display:flex;
+
+  flex-direction:column;
+
+}
+
+
+
+
+.search-input {
+
+  flex-shrink:0;
+
+  width:100%;
+
+  padding:11px 15px;
+
+  margin-bottom:9px;
+
+  border-radius:999px;
+
+  border:
+
+    1px solid rgba(255,255,255,.14);
+
+  background:
+
+    rgba(255,255,255,.07);
+
+  color:white;
+
+  font-size:14px;
+
+  outline:none;
+
+}
+
+
+
+
+.search-input:focus {
+
+  border-color:
+
+    rgba(255,255,255,.3);
+
+  background:
+
+    rgba(255,255,255,.11);
+
+}
+
+
+
+
+.search-input::placeholder {
+
+  color:
+
+    rgba(255,255,255,.4);
+
+}
+
+
+
+
+.search-results {
+
+  flex:1;
+
+  min-height:0;
+
+}
+
+
+
+
+.search-result {
+
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+}
+
+
+
+
+.search-result-icon {
+
+  flex-shrink:0;
+
+  opacity:.6;
+
+}
+
+
+
+
 /* Evidenziazione incrociata: verde per gli "amici stretti",
    rosso per chi non ricambia il follow — visibile ovunque
    quello username compaia, in qualsiasi lista */
