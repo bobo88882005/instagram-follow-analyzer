@@ -698,6 +698,10 @@ h1 {
 
   overflow-y:auto;
 
+  -webkit-overflow-scrolling:touch;
+
+  contain:content;
+
   overflow-x:hidden;
 
   touch-action:pan-y;
