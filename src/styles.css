@@ -886,6 +886,87 @@ h1 {
 
 
 
+/* Evidenziazione incrociata: verde per gli "amici stretti",
+   rosso per chi non ricambia il follow — visibile ovunque
+   quello username compaia, in qualsiasi lista */
+
+.user-list a.is-close-friend {
+
+  border-color:
+
+    rgba(34,197,94,.45);
+
+}
+
+
+
+
+.user-list a.is-close-friend .user-list-name {
+
+  color:#4ade80;
+
+}
+
+
+
+
+.user-list a.is-not-following-back {
+
+  border-color:
+
+    rgba(248,113,113,.45);
+
+}
+
+
+
+
+.user-list a.is-not-following-back .user-list-name {
+
+  color:#f87171;
+
+}
+
+
+
+
+.user-list a.is-close-friend.is-not-following-back {
+
+  border-image:
+
+    linear-gradient(
+      90deg,
+      rgba(34,197,94,.6),
+      rgba(248,113,113,.6)
+    )
+    1;
+
+}
+
+
+
+
+.user-list a.is-close-friend.is-not-following-back .user-list-name {
+
+  background:
+
+    linear-gradient(
+      90deg,
+      #4ade80,
+      #f87171
+    );
+
+  -webkit-background-clip:text;
+
+  background-clip:text;
+
+  color:transparent;
+
+}
+
+
+
+
 
 .user-list a:hover {
 
