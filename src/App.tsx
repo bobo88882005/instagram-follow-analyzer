@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 
 import {
   Upload,
+  Search,
   Users,
   UserPlus,
   HeartCrack,
@@ -33,6 +34,9 @@ function App() {
   const [section, setSection] =
     useState<string | null>(null);
 
+
+  const [searchQuery, setSearchQuery] =
+    useState("");
 
 
 
@@ -566,6 +570,48 @@ function App() {
 
 
 
+  // Categorie su cui cercare, ognuna con l'icona già usata
+  // per la card/tab corrispondente.
+  const searchCategories = [
+    { key:"followers", icon:Users, data: result?.followers },
+    { key:"following", icon:UserPlus, data: result?.following },
+    { key:"notback", icon:HeartCrack, data: result?.notFollowingBack },
+    { key:"pending", icon:Clock, data: result?.pendingRequests },
+    { key:"inactive", icon:Ghost, data: result?.possibleInactive },
+    { key:"received", icon:Inbox, data: result?.receivedRequests },
+    { key:"unfollow", icon:Undo2, data: result?.recentlyUnfollowed }
+  ];
+
+
+  const trimmedQuery =
+    searchQuery.trim().toLowerCase();
+
+
+  const searchResults =
+    trimmedQuery.length >= 2
+    ?
+    searchCategories.flatMap(
+      cat =>
+      (cat.data ?? [])
+        .filter(
+          (e:InstagramEntry) =>
+          e.username.includes(trimmedQuery)
+        )
+        .map(
+          (e:InstagramEntry) => ({
+            username: e.username,
+            date: e.date,
+            icon: cat.icon,
+            key: cat.key
+          })
+        )
+    ).slice(0,200)
+    :
+    [];
+
+
+
+
 
 
 
@@ -635,11 +681,30 @@ function App() {
 
               className="icon-btn"
 
+              title="Cerca uno username"
+
+              onClick={() => {
+                toggleSection("search");
+              }}
+
+            >
+
+              <Search size={16}/>
+
+            </button>
+
+
+
+            <button
+
+              className="icon-btn"
+
               title="Nuova analisi"
 
               onClick={() => {
                 setResult(null);
                 setSection(null);
+                setSearchQuery("");
               }}
 
             >
@@ -1114,6 +1179,127 @@ function App() {
               inactiveSet={inactiveSet}
 
               />
+
+            </div>
+
+          )
+        }
+
+
+
+
+        {
+          section==="search" && (
+
+            <div className="popup-section search-section">
+
+              <input
+
+                type="text"
+
+                className="search-input"
+
+                placeholder="Cerca uno username..."
+
+                value={searchQuery}
+
+                onChange={
+                  e =>
+                  setSearchQuery(e.target.value)
+                }
+
+                autoFocus
+
+              />
+
+
+
+              <div className="user-list search-results">
+
+                {
+                  trimmedQuery.length < 2
+
+                  ?
+
+                  <div className="empty">
+                    Digita almeno 2 caratteri
+                  </div>
+
+                  :
+
+                  searchResults.length === 0
+
+                  ?
+
+                  <div className="empty">
+                    Nessun risultato
+                  </div>
+
+                  :
+
+                  searchResults.map(
+                    r => {
+
+                      const Icon =
+                        r.icon;
+
+                      return (
+
+                        <a
+
+                          key={r.key + "-" + r.username}
+
+                          className="search-result"
+
+                          href={
+                            profileLink(r.username)
+                          }
+
+                          target="_blank"
+
+                          rel="noreferrer"
+
+                        >
+
+                          <Icon
+
+                            size={14}
+
+                            className="search-result-icon"
+
+                          />
+
+
+                          <span className="user-list-name">
+
+                            @{r.username}
+
+                          </span>
+
+
+                          {
+                            r.date && (
+
+                              <span className="user-list-date">
+
+                                {formatDate(r.date)}
+
+                              </span>
+
+                            )
+                          }
+
+                        </a>
+
+                      );
+
+                    }
+
+                  )
+
+                }
+
+              </div>
 
             </div>
 
