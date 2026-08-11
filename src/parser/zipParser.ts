@@ -14,13 +14,15 @@ export async function readInstagramZip(
     following: [],
     pendingRequests: [],
     receivedRequests: [],
-    recentlyUnfollowed: []
+    recentlyUnfollowed: [],
+    closeFriends: []
   } as {
     followers:InstagramEntry[];
     following:InstagramEntry[];
     pendingRequests:InstagramEntry[];
     receivedRequests:InstagramEntry[];
     recentlyUnfollowed:InstagramEntry[];
+    closeFriends:InstagramEntry[];
   };
 
 
@@ -84,6 +86,14 @@ export async function readInstagramZip(
       )
     ) {
       result.recentlyUnfollowed =
+        users;
+    }
+    else if (
+      name.includes(
+        "close_friends"
+      )
+    ) {
+      result.closeFriends =
         users;
     }
 
