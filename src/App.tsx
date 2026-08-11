@@ -199,11 +199,15 @@ function App() {
   function UserList({
     users,
     closeFriendsSet,
-    notFollowingBackSet
+    notFollowingBackSet,
+    unfollowedSet,
+    inactiveSet
   }:{
     users?:InstagramEntry[],
     closeFriendsSet?:Set<string>,
-    notFollowingBackSet?:Set<string>
+    notFollowingBackSet?:Set<string>,
+    unfollowedSet?:Set<string>,
+    inactiveSet?:Set<string>
   }) {
 
 
@@ -422,10 +426,22 @@ function App() {
                 ??
                 false;
 
+              const isUnfollowed =
+                unfollowedSet?.has(username)
+                ??
+                false;
+
+              const isInactive =
+                inactiveSet?.has(username)
+                ??
+                false;
+
               const pillClasses =
                 [
                   isCloseFriend ? "is-close-friend" : "",
-                  isNotFollowingBack ? "is-not-following-back" : ""
+                  isNotFollowingBack ? "is-not-following-back" : "",
+                  isUnfollowed ? "is-unfollowed" : "",
+                  isInactive ? "is-inactive" : ""
                 ]
                 .filter(Boolean)
                 .join(" ");
@@ -530,6 +546,20 @@ function App() {
   const notFollowingBackSet =
     new Set(
       (result?.notFollowingBack ?? [])
+      .map((e:any) => e.username)
+    );
+
+
+  const unfollowedSet =
+    new Set(
+      (result?.recentlyUnfollowed ?? [])
+      .map((e:any) => e.username)
+    );
+
+
+  const inactiveSet =
+    new Set(
+      (result?.possibleInactive ?? [])
       .map((e:any) => e.username)
     );
 
@@ -905,6 +935,10 @@ function App() {
 
               notFollowingBackSet={notFollowingBackSet}
 
+              unfollowedSet={unfollowedSet}
+
+              inactiveSet={inactiveSet}
+
               />
 
             </div>
@@ -929,6 +963,10 @@ function App() {
               closeFriendsSet={closeFriendsSet}
 
               notFollowingBackSet={notFollowingBackSet}
+
+              unfollowedSet={unfollowedSet}
+
+              inactiveSet={inactiveSet}
 
               />
 
@@ -955,6 +993,10 @@ function App() {
 
               notFollowingBackSet={notFollowingBackSet}
 
+              unfollowedSet={unfollowedSet}
+
+              inactiveSet={inactiveSet}
+
               />
 
             </div>
@@ -979,6 +1021,10 @@ function App() {
               closeFriendsSet={closeFriendsSet}
 
               notFollowingBackSet={notFollowingBackSet}
+
+              unfollowedSet={unfollowedSet}
+
+              inactiveSet={inactiveSet}
 
               />
 
@@ -1005,6 +1051,10 @@ function App() {
 
               notFollowingBackSet={notFollowingBackSet}
 
+              unfollowedSet={unfollowedSet}
+
+              inactiveSet={inactiveSet}
+
               />
 
             </div>
@@ -1030,6 +1080,10 @@ function App() {
 
               notFollowingBackSet={notFollowingBackSet}
 
+              unfollowedSet={unfollowedSet}
+
+              inactiveSet={inactiveSet}
+
               />
 
             </div>
@@ -1054,6 +1108,10 @@ function App() {
               closeFriendsSet={closeFriendsSet}
 
               notFollowingBackSet={notFollowingBackSet}
+
+              unfollowedSet={unfollowedSet}
+
+              inactiveSet={inactiveSet}
 
               />
 
