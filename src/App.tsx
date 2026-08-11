@@ -222,6 +222,10 @@ function App() {
       useRef<HTMLDivElement>(null);
 
 
+    const rafRef =
+      useRef<number | null>(null);
+
+
     const [canScrollUp, setCanScrollUp] =
       useState(false);
 
@@ -266,6 +270,42 @@ function App() {
       );
 
     }
+
+
+
+    // Durante lo scroll, il browser può generare eventi molto più
+    // spesso di quanto riesca a disegnare i frame (specialmente su
+    // mobile). Allineando l'aggiornamento a requestAnimationFrame,
+    // ricalcoliamo al massimo una volta per frame invece che ad
+    // ogni singolo evento grezzo, mantenendo lo scroll fluido.
+    function handleScroll() {
+
+      if (rafRef.current !== null)
+        return;
+
+      rafRef.current =
+        requestAnimationFrame(() => {
+
+          updateFade();
+
+          rafRef.current = null;
+
+        });
+
+    }
+
+
+
+    useEffect(() => {
+
+      return () => {
+
+        if (rafRef.current !== null)
+          cancelAnimationFrame(rafRef.current);
+
+      };
+
+    }, []);
 
 
 
@@ -345,7 +385,7 @@ function App() {
 
         ref={listRef}
 
-        onScroll={updateFade}
+        onScroll={handleScroll}
 
         style={{
           paddingTop: topPadding,
