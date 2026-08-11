@@ -144,7 +144,7 @@ function App() {
 
 
 
-  function formatDate(
+  function parseDateParts(
     raw?:string
   ) {
 
@@ -158,7 +158,7 @@ function App() {
       );
 
     if (!match)
-      return raw;
+      return null;
 
 
     const monthToken =
@@ -175,21 +175,91 @@ function App() {
       monthMap[monthToken.slice(0,3)];
 
     if (!month)
+      return null;
+
+
+    return {
+      day: parseInt(match[2], 10),
+      month,
+      year: parseInt(match[3], 10)
+    };
+
+  }
+
+
+
+  function formatDate(
+    raw?:string
+  ) {
+
+    if (!raw)
+      return null;
+
+
+    const parts =
+      parseDateParts(raw);
+
+    if (!parts)
       return raw;
 
 
-    const day =
-      match[2].padStart(2,"0");
-
-    const year =
-      match[3];
-
-
     return (
-      day + "/" +
-      String(month).padStart(2,"0") + "/" +
-      year
+      String(parts.day).padStart(2,"0") + "/" +
+      String(parts.month).padStart(2,"0") + "/" +
+      parts.year
     );
+
+  }
+
+
+
+  // Tra più date associate allo stesso username (es. presente
+  // in più liste), restituisce la più recente. Le date non
+  // interpretabili vengono ignorate nel confronto; se nessuna
+  // è interpretabile, restituisce semplicemente la prima trovata.
+  function getMostRecentDate(
+    dates:(string | undefined)[]
+  ) {
+
+    let best:string | undefined =
+      undefined;
+
+    let bestKey =
+      -1;
+
+
+    for (const raw of dates) {
+
+      const parts =
+        parseDateParts(raw);
+
+      if (!parts) {
+
+        if (best === undefined)
+          best = raw;
+
+        continue;
+
+      }
+
+
+      const key =
+        parts.year * 10000
+        +
+        parts.month * 100
+        +
+        parts.day;
+
+
+      if (key > bestKey) {
+        bestKey = key;
+        best = raw;
+      }
+
+    }
+
+
+    return best;
 
   }
 
@@ -587,7 +657,7 @@ function App() {
     searchQuery.trim().toLowerCase();
 
 
-  const searchResults =
+  const searchResultsRaw =
     trimmedQuery.length >= 2
     ?
     searchCategories.flatMap(
@@ -605,9 +675,62 @@ function App() {
             key: cat.key
           })
         )
-    ).slice(0,200)
+    )
     :
     [];
+
+
+
+  // Raggruppo per username: un solo risultato con tutte le
+  // icone delle liste in cui compare, e la data più recente
+  // tra tutte quelle trovate per quello username.
+  const groupedSearchMap =
+    new Map<
+      string,
+      {
+        username:string;
+        icons:{ icon:any; key:string }[];
+        dates:(string | undefined)[];
+      }
+    >();
+
+  for (const r of searchResultsRaw) {
+
+    if (!groupedSearchMap.has(r.username)) {
+      groupedSearchMap.set(r.username, {
+        username: r.username,
+        icons: [],
+        dates: []
+      });
+    }
+
+    const group =
+      groupedSearchMap.get(r.username)!;
+
+    if (
+      !group.icons.some(i => i.key === r.key)
+    ) {
+      group.icons.push({
+        icon: r.icon,
+        key: r.key
+      });
+    }
+
+    group.dates.push(r.date);
+
+  }
+
+
+  const searchResults =
+    Array.from(groupedSearchMap.values())
+    .map(
+      g => ({
+        username: g.username,
+        icons: g.icons,
+        date: getMostRecentDate(g.dates)
+      })
+    )
+    .slice(0,200);
 
 
 
@@ -1240,16 +1363,44 @@ function App() {
                   searchResults.map(
                     r => {
 
-                      const Icon =
-                        r.icon;
+                      const isCloseFriend =
+                        closeFriendsSet?.has(r.username)
+                        ??
+                        false;
+
+                      const isNotFollowingBack =
+                        notFollowingBackSet?.has(r.username)
+                        ??
+                        false;
+
+                      const isUnfollowed =
+                        unfollowedSet?.has(r.username)
+                        ??
+                        false;
+
+                      const isInactive =
+                        inactiveSet?.has(r.username)
+                        ??
+                        false;
+
+                      const pillClasses =
+                        [
+                          "search-result",
+                          isCloseFriend ? "is-close-friend" : "",
+                          isNotFollowingBack ? "is-not-following-back" : "",
+                          isUnfollowed ? "is-unfollowed" : "",
+                          isInactive ? "is-inactive" : ""
+                        ]
+                        .filter(Boolean)
+                        .join(" ");
 
                       return (
 
                         <a
 
-                          key={r.key + "-" + r.username}
+                          key={r.username}
 
-                          className="search-result"
+                          className={pillClasses}
 
                           href={
                             profileLink(r.username)
@@ -1261,15 +1412,6 @@ function App() {
 
                         >
 
-                          <Icon
-
-                            size={14}
-
-                            className="search-result-icon"
-
-                          />
-
-
                           <span className="user-list-name">
 
                             @{r.username}
@@ -1277,17 +1419,44 @@ function App() {
                           </span>
 
 
-                          {
-                            r.date && (
+                          <span className="search-result-right">
 
-                              <span className="user-list-date">
+                            <span className="search-result-icons">
 
-                                {formatDate(r.date)}
+                              {
+                                r.icons.map(
+                                  ({ icon:Icon, key }) => (
 
-                              </span>
+                                    <Icon
 
-                            )
-                          }
+                                      key={key}
+
+                                      size={13}
+
+                                      className="search-result-icon"
+
+                                    />
+
+                                  )
+                                )
+                              }
+
+                            </span>
+
+
+                            {
+                              r.date && (
+
+                                <span className="user-list-date">
+
+                                  {formatDate(r.date)}
+
+                                </span>
+
+                              )
+                            }
+
+                          </span>
 
                         </a>
 
