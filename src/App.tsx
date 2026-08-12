@@ -39,16 +39,6 @@ function App() {
     useState("");
 
 
-  useEffect(() => {
-
-    if (section !== "search") {
-      document.body.style.position = "";
-      document.body.style.inset = "";
-    }
-
-  }, [section]);
-
-
 
   // Alcune versioni di iOS Safari spostano la pagina quando
   // compare la tastiera, in modo incoerente a seconda di come
@@ -1371,20 +1361,6 @@ function App() {
                   e =>
                   setSearchQuery(e.target.value)
                 }
-
-                onFocus={() => {
-
-                  document.body.style.position = "fixed";
-                  document.body.style.inset = "0";
-
-                }}
-
-                onBlur={() => {
-
-                  document.body.style.position = "";
-                  document.body.style.inset = "";
-
-                }}
 
                 autoFocus
 
