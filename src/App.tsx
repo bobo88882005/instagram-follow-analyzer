@@ -50,6 +50,37 @@ function App() {
 
 
 
+  // Alcune versioni di iOS Safari spostano la pagina quando
+  // compare la tastiera, in modo incoerente a seconda di come
+  // scatta il focus (non sempre prevenibile in anticipo). Come
+  // rete di sicurezza attiva, riportiamo sempre la vista a (0,0)
+  // ogni volta che il browser prova a scrollare/spostare il
+  // visualViewport, invece di provare a prevenire lo spostamento
+  // prima che avvenga.
+  useEffect(() => {
+
+    const vv =
+      window.visualViewport;
+
+    if (!vv)
+      return;
+
+    function pinToTop() {
+      window.scrollTo(0, 0);
+    }
+
+    vv.addEventListener("resize", pinToTop);
+    vv.addEventListener("scroll", pinToTop);
+
+    return () => {
+      vv.removeEventListener("resize", pinToTop);
+      vv.removeEventListener("scroll", pinToTop);
+    };
+
+  }, []);
+
+
+
 
   async function handleUpload(
     e: React.ChangeEvent<HTMLInputElement>
