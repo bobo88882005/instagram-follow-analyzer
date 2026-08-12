@@ -1371,8 +1371,6 @@ function App() {
                   setSearchQuery(e.target.value)
                 }
 
-                autoFocus
-
               />
 
 
