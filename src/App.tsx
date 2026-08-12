@@ -40,13 +40,13 @@ function App() {
 
 
 
-  // Alcune versioni di iOS Safari spostano la pagina quando
-  // compare la tastiera, in modo incoerente a seconda di come
-  // scatta il focus (non sempre prevenibile in anticipo). Come
-  // rete di sicurezza attiva, riportiamo sempre la vista a (0,0)
-  // ogni volta che il browser prova a scrollare/spostare il
-  // visualViewport, invece di provare a prevenire lo spostamento
-  // prima che avvenga.
+  // Anche con il body fisso, iOS Safari può "pannare" il
+  // visual viewport (la porzione di pagina effettivamente
+  // mostrata sopra la tastiera) indipendentemente dal layout:
+  // è un meccanismo diverso dallo scroll del documento, quindi
+  // scrollTo(0,0) da solo non basta a contrastarlo. Qui invece
+  // contro-traslo il body esattamente dell'offset che Safari
+  // applica, annullandolo in tempo reale.
   useEffect(() => {
 
     const vv =
@@ -55,16 +55,25 @@ function App() {
     if (!vv)
       return;
 
-    function pinToTop() {
-      window.scrollTo(0, 0);
+    function counterPan() {
+
+      document.body.style.transform =
+        `translate(${-vv!.offsetLeft}px, ${-vv!.offsetTop}px)`;
+
     }
 
-    vv.addEventListener("resize", pinToTop);
-    vv.addEventListener("scroll", pinToTop);
+    counterPan();
+
+    vv.addEventListener("resize", counterPan);
+    vv.addEventListener("scroll", counterPan);
 
     return () => {
-      vv.removeEventListener("resize", pinToTop);
-      vv.removeEventListener("scroll", pinToTop);
+
+      vv.removeEventListener("resize", counterPan);
+      vv.removeEventListener("scroll", counterPan);
+
+      document.body.style.transform = "";
+
     };
 
   }, []);
