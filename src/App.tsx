@@ -1344,9 +1344,7 @@ function App() {
 
                   ?
 
-                  <div className="empty">
-                    Digita almeno 2 caratteri
-                  </div>
+                  null
 
                   :
 
