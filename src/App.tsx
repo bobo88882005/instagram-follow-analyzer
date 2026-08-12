@@ -39,6 +39,16 @@ function App() {
     useState("");
 
 
+  useEffect(() => {
+
+    if (section !== "search") {
+      document.body.style.position = "";
+      document.body.style.inset = "";
+    }
+
+  }, [section]);
+
+
 
 
   async function handleUpload(
@@ -1330,6 +1340,20 @@ function App() {
                   e =>
                   setSearchQuery(e.target.value)
                 }
+
+                onFocus={() => {
+
+                  document.body.style.position = "fixed";
+                  document.body.style.inset = "0";
+
+                }}
+
+                onBlur={() => {
+
+                  document.body.style.position = "";
+                  document.body.style.inset = "";
+
+                }}
 
                 autoFocus
 
